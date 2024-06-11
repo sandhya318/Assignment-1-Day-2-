@@ -1,0 +1,315 @@
+                                            Assignment 1
+Ensure the script checks if a specific file (e.g., myfile.txt) exists in the current directory. If it exists, print "File exists", otherwise print "File not found".
+bash
+#!/bin/bash
+echo "Select an option:"
+echo "1. Display file contents"
+echo "2. List directory contents"
+echo "3. Check for file existence"
+echo "4. Exit"
+
+read -r choice
+case $choice in
+  1)
+    echo "Enter filename: "
+    read -r filename
+    if [ -f "$filename" ]; then
+      cat "$filename"
+    else
+      echo "File not found"
+    fi
+    ;;
+  2)
+    echo "Enter directory: "
+    read -r directory
+    if [ -d "$directory" ]; then
+      ls -l "$directory"
+else
+      echo "Directory not found"
+    fi
+    ;;3)
+ if [ -f "myfile.txt" ]; then
+      echo "File exists"
+    else
+      echo "File not found"
+    fi
+    ;;
+  4)
+    exit 0
+    ;;
+  *)
+    echo "Invalid choice"
+    ;;
+Esac
+
+                                                   Assignment 2: 
+Write a script that reads numbers from the user until they enter '0'. The script should also print whether each number is odd or even.
+bash
+#!/bin/bash
+while true
+do
+  read -p "Enter a number (0 to quit): " number
+  if [ "$number" -eq 0 ]; then
+    break
+  fi
+  if [ "$number" -eq "$number" 2>/dev/null ]; then
+    if [ $((number % 2)) -eq 0 ]; then
+      echo "$number is even"
+    else
+      echo "$number is odd"
+    fi
+  else
+    echo "Invalid input. Please enter a number."
+  fi
+done
+                                               Assignment 3
+Create a function that takes a filename as an argument and prints the number of lines in the file. Call this function from your script with different filenames.
+
+bash
+#!/bin/bash
+
+# Define the function
+count_lines() {
+  local filename=$1
+  local count=0
+  if [ -f "$filename" ]; then
+    count=$(wc -l < "$filename")
+    echo "$filename has $count lines"
+  else
+    echo "$filename not found"
+  fi
+}
+# Call the function with different filenames
+count_lines "file1.txt"
+count_lines "file2.txt"
+count_lines "file3.txt"
+
+                                                 Assignment 4:
+ Write a script that creates a directory named TestDir and inside it, creates ten files named File1.txt, File2.txt, ... File10.txt. Each file should contain its filename as its content (e.g., File1.txt contains "File1.txt").
+bash
+bash
+#!/bin/bash
+# Create the directory
+mkdir TestDir
+# Create the files and add content
+for i in {1..10}; do
+  filename="File$i.txt"
+  echo "$filename" > TestDir/$filename
+done
+                                            Assignment 5:
+ Modify the script to handle errors, such as the directory already existing or lacking permissions to create files.Add a debugging mode that prints additional information when enabled.
+#!/bin/bash
+# Set debugging mode (default: off)
+DEBUG=false
+# Set directory name
+DIRNAME="TestDir"
+# Create the directory with error handling
+if mkdir "$DIRNAME" 2>/dev/null; then
+  echo "Directory created: $DIRNAME"
+else
+  if [ $? -eq 1 ]; then
+    echo "Error: Directory already exists"
+  else
+    echo "Error: Unable to create directory (permission denied)"
+    exit 1
+  fi
+fi
+
+# Create files with error handling
+for i in {1..10}; do
+  filename="File$i.txt"
+  if $DEBUG; then
+    echo "Creating file: $filename"
+  fi
+  if echo "$filename" > "$DIRNAME/$filename" 2>/dev/null; then
+    if $DEBUG; then
+      echo "File created: $filename"
+    fi
+  else
+    echo "Error: Unable to create file (permission denied)"
+    exit 1
+  fi
+done
+                                             Assignment  6: 
+Given a sample log file, write a script using grep to extract all lines containing "ERROR". Use awk to print the date, time, and error message of each extracted line.Data Processing wit.
+bash
+#!/bin/bash
+# File name
+FILE="log_file.log"
+# Extract lines containing "ERROR" using grep
+grep "ERROR" "$FILE" | 
+# Use awk to print date, time, and error message
+awk '{print $1, $2, $NF}'
+
+Let me explain how this script works:
+
+1. grep "ERROR" "$FILE" searches for lines containing the string "ERROR" in the log file.
+2. The awk command processes the output of grep.
+3. awk prints the first field ($1, the date), the second field ($2, the time), and the last field ($NF, the error message).
+
+Assuming your log file has a format like this:
+
+2022-01-01 12:00:00 ERROR This is an error message
+2022-01-01 13:00:00 INFO This is an info message
+2022-01-01 14:00:00 ERROR Another error message
+
+The script will output:
+
+2022-01-01 12:00:00 This is an error message
+2022-01-01 14:00:00 Another error message
+
+                                            Assignment 7 : 
+create a script that takes a text file and replace all occurrence of "old_text" with "new_text".Use sed to perform this operation and output the result to a new file.
+
+bash
+#!/bin/bash
+# File name
+FILE="input.txt"
+# Output file name
+OUTPUT="output.txt"
+
+# Replace "old_text" with "new_text" using sed
+sed 's/old_text/new_text/g' "$FILE" > "$OUTPUT"
+
+                                        File Backup Script: 
+Write a shell script that takes a directory as input and creates a backup of all files in that directory. The script should compress the files and store the backup in a specified location with a timestamp.
+
+bash
+#!/bin/bash
+
+# Directory to backup
+DIR=$1
+
+# Backup location
+BACKUP_LOC=/path/to/backup/location
+
+# Timestamp
+TIMESTAMP=$(date +%Y-%m-%d-%H-%M-%S)
+
+# Create backup file name
+BACKUP_FILE=backup-$TIMESTAMP.tar.gz
+
+# Create archive
+tar -czf $BACKUP_LOC/$BACKUP_FILE $DIR
+
+echo "Backup created: $BACKUP_LOC/$BACKUP_FILE"
+
+                                    System Monitoring Script: 
+Create a shell script that monitors system resources such as CPU usage, memory usage, and disk space. The script should log the resource usage periodically and alert if any resource exceeds a specified threshold.
+bash
+#!/bin/bash
+
+# Threshold values
+CPU_THRESHOLD=80
+MEM_THRESHOLD=90
+DISK_THRESHOLD=90
+
+# Logging file
+LOG_FILE=/var/log/sysmon.log
+
+# Interval (seconds)
+INTERVAL=300
+
+while true
+do
+  # CPU usage
+  CPU_USAGE=$(top -b -n 1 | grep "Cpu(s)" | awk '{print $2}' | sed 's/%//')
+  if [ $CPU_USAGE -gt $CPU_THRESHOLD ]; then
+    echo "CPU usage high: $CPU_USAGE%" >> $LOG_FILE
+    # Alert command (e.g., email or notification)
+  fi
+
+  # Memory usage
+  MEM_USAGE=$(free -m | awk 'NR==2{print $3/$2*100}')
+  if [ $MEM_USAGE -gt $MEM_THRESHOLD ]; then
+    echo "Memory usage high: $MEM_USAGE%" >> $LOG_FILE
+    # Alert command
+  fi
+
+  # Disk usage
+  DISK_USAGE=$(df -h | awk 'NR==2{print $5}' | sed 's/%//')
+  if [ $DISK_USAGE -gt $DISK_THRESHOLD ]; then
+echo "Disk usage high: $DISK_USAGE%" >> $LOG_FILE
+    # Alert command
+  fi
+
+  # Sleep for interval
+  sleep $INTERVAL
+done
+                       Database Backup and Restore Script: 
+Write a shell script that automates the backup and restoration of a MySQL or PostgreSQLdatabase. The script should take database credentials and backup location as input and provide options for both backup and restoration has context menu
+bash
+#!/bin/bash
+
+# Threshold values
+CPU_THRESHOLD=80
+MEM_THRESHOLD=90
+DISK_THRESHOLD=90
+
+# Logging file
+LOG_FILE=/var/log/sysmon.log
+
+# Interval (seconds)
+INTERVAL=300
+
+while true
+do
+  # CPU usage
+  CPU_USAGE=$(top -b -n 1 | grep "Cpu(s)" | awk '{print $2}' | sed 's/%//')
+  if [ $CPU_USAGE -gt $CPU_THRESHOLD ]; then
+    echo "CPU usage high: $CPU_USAGE%" >> $LOG_FILE
+    # Alert command (e.g., email or notification)
+  fi
+
+  # Memory usage
+  MEM_USAGE=$(free -m | awk 'NR==2{print $3/$2*100}')
+  if [ $MEM_USAGE -gt $MEM_THRESHOLD ]; then
+    echo "Memory usage high: $MEM_USAGE%" >> $LOG_FILE
+    # Alert command
+  Fi
+# Disk usage
+  DISK_USAGE=$(df -h | awk 'NR==2{print $5}' | sed 's/%//')
+  if [ $DISK_USAGE -gt $DISK_THRESHOLD ]; then
+    echo "Disk usage high: $DISK_USAGE%" >> $LOG_FILE
+    # Alert command
+  fi
+
+  # Sleep for interval
+  sleep $INTERVAL
+done
+                                                 Assignment 8
+write a script using case for taking the choice from user ,if the user selects 1 then one should allow the user to enter filename and then that file should be displayed .option 2 the user is asked to enter a director and the files and folders of that directory are displayed.
+option 3 the user is asked to enter a string and a file name and search the number of occurrences of that string in that file.
+bash
+#!/bin/bash
+
+echo "Menu:"
+echo "1. Display file contents"
+echo "2. List directory contents"
+echo "3. Search for string in file"
+echo "4. Exit"
+
+read -p "Enter your choice: " choice
+
+case $choice in
+  1)
+    read -p "Enter filename: " filename
+    cat "$filename"
+    ;;
+  2)
+    read -p "Enter directory: " directory
+    ls "$directory"
+    ;;
+  3)
+    read -p "Enter string: " string
+    read -p "Enter filename: " filename
+    grep -o "$string" "$filename" | wc -l
+    ;;
+  4)
+    exit 0
+    ;;
+  *)
+    echo "Invalid choice"
+    ;;
+esac
+ 
