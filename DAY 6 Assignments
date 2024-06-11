@@ -1,0 +1,120 @@
+                                            Assignment 1:
+ Initialize a new Git repository in a directory of your choice. Add a simple text file to the repository and make the first commit.
+
+Step 1: Create a new directory
+Choose a directory name (e.g., "my_repo") and create it:
+bash
+mkdir my_repo
+
+Step 2: Initialize a new Git repository
+Navigate to the directory and initialize a new Git repository:
+bash
+cd my_repo
+git init
+
+Step 3: Create a text file
+Create a simple text file (e.g., "hello.txt") with some content:
+bash
+echo "Hello, World!" > hello.txt
+
+Step 4: Add the file to the repository
+Stage the file for the first commit:
+shell
+git add hello.txt
+
+Step 5: Make the first commit
+Commit the file with a meaningful commit message:
+shell
+git commit -m "Initial commit: Added hello.txt"
+That's it! You have now successfully initialized a new Git repository, added a file, and made the first commit
+Here's a summary of the commands:
+bash
+mkdir my_repo
+cd my_repo
+git init
+echo "Hello, World!" > hello.txt
+git add hello.txt
+git commit -m "Initial commit: Added hello.txt"
+
+                                                 Assignment 2 
+Branch Creation and Switching
+Create a new branch named 'feature' and switch to it. Make changes in the 'feature' branch and commit them.
+Step 1: Create a new branch
+Create a new branch named "feature" from the current branch (usually the "main" or "master" branch):
+shell
+git branch feature
+Step 2: Switch to the new branch
+Checkout the "feature" branch to switch to it:
+bash
+git checkout feature
+
+Step 3: Make changes
+Edit the "hello.txt" file and add some new content:
+echo "This is a new feature!" >> hello.txt
+
+Step 4: Stage and commit the changes
+Stage the changes and commit them with a meaningful commit message:
+shell
+git add hello.txt
+git commit -m "Added new feature content"
+Now, you have created a new branch, switched to it, made changes, and committed them. Your "feature" branch has diverged from the original branch (e.g., "main" or "master").
+
+Here's a summary of the commands:
+bash
+git branch feature
+git checkout feature
+echo "This is a new feature!" >> hello.txt
+git add hello.txt
+git commit -m "Added new feature content"
+
+                                                Assignment 3 
+Feature Branches and Hotfixes
+Create a 'hotfix' branch to fix an issue in the main code. Merge the 'hotfix' branch into 'main' ensuring that the issue is resolved.
+Step 1: Create a 'hotfix' branch
+Create a new branch named "hotfix" from the current "main" branch:
+bash
+git branch hotfix
+
+Step 2: Switch to the 'hotfix' branch
+Checkout the "hotfix" branch to switch to it:
+bash
+git checkout hotfix
+
+Step 3: Fix the issue
+Edit the relevant file(s) to fix the issue. For example, let's say the issue is a typo in "hello.txt":
+bash
+echo "Hello, World! (Fixed)" > hello.txt
+
+Step 4: Stage and commit the fix
+Stage the changes and commit them with a meaningful commit message:
+
+shell
+git add hello.txt
+git commit -m "Fixed typo in hello.txt"
+
+Step 5: Switch back to 'main'
+Checkout the "main" branch to switch back to it:
+shell
+git checkout main
+
+Step 6: Merge the 'hotfix' branch into 'main'
+Merge the "hotfix" branch into "main" to apply the fix:
+shell
+git merge hotfix
+
+Step 7: Commit the merge
+Commit the merge with a meaningful commit message:
+shell
+git commit -m "Merged hotfix into main"
+Now, the issue is resolved in the "main" branch.
+Here's a summary of the commands:
+bash
+git branch hotfix
+git checkout hotfix
+echo "Hello, World! (Fixed)" > hello.txt
+git add hello.txt
+git commit -m "Fixed typo in hello.txt"
+git checkout main
+git merge hotfix
+git commit -m "Merged hotfix into main"
+
