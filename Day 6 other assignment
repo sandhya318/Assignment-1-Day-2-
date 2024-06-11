@@ -1,0 +1,155 @@
+                                             Assignment 1
+Ensure the script checks if a specific file (e.g., myfile.txt) exists in the current directory. If it exists, print "File exists", otherwise print "File not found".
+bash
+#!/bin/bash
+if [ -f "myfile.txt" ]; then
+  echo "File exists"
+else
+  echo "File not found"
+fi
+
+Here's how the script works:
+1. The if statement checks if the file "myfile.txt" exists using the -f test, which is true if the file exists and is a regular file (not a directory).
+2. If the file exists, the script prints "File exists".
+3. If the file does not exist, the script prints "File not found".
+
+                                                 Assignment 2 
+Write a script that reads numbers from the user until they enter '0'. The script should also print whether each number is odd or even.
+bash
+#!/bin/bash
+while true; do
+  read -p "Enter a number (0 to quit): " num
+  if [ $num -eq 0 ]; then
+    break
+  fi
+  if [ $((num % 2)) -eq 0 ]; then
+    echo "$num is even"
+  else
+    echo "$num is odd"
+  fi
+done
+
+Here's how the script works:
+1. The while loop runs indefinitely until the user enters '0'.
+2. The read command prompts the user to enter a number and stores it in the num variable.
+3. If the user enters '0', the loop exits using the break command.
+4. If the number is not '0', the script checks whether it's even or odd using the modulo operator (%).
+5. If the number is even, the script prints "$num is even".
+6. If the number is odd, the script prints "$num is odd".
+
+                                            Assignment 3 
+Create a function that takes a filename as an argument and prints the number of lines in the file. Call this function from your script with different filenames.
+bash
+#!/bin/bash
+# Define the function
+count_lines() {
+  local file=$1
+  local count=$(wc -l < "$file")
+  echo "$file has $count lines"
+}
+# Call the function with different filenames
+count_lines "file1.txt"
+count_lines "file2.txt"
+count_lines "file3.txt"
+
+Here's how the script works:
+1. The count_lines function takes a filename as an argument ($1).
+2. It uses the wc command to count the number of lines in the file (wc -l).
+3. It prints the filename and the number of lines to the console.
+                                         Assignment 4
+Write a script that creates a directory named TestDir and inside it, creates ten files named File1.txt, File2.txt, ... File10.txt. Each file should contain its filename as its content (e.g., File1.txt contains "File1.txt").
+
+bash
+#!/bin/bash
+# Create the directory
+mkdir TestDir
+# Create the files and add content
+for i in {1..10}; do
+  filename="File$i.txt"
+  echo "$filename" > TestDir/$filename
+done
+
+Here's how the script works:
+1. The mkdir command creates the directory named TestDir.
+2. The for loop runs ten times, creating a file for each iteration.
+3. The filename variable is set to "File$i.txt", where $i is the loop counter.
+4. The echo command writes the filename to the file, and the > redirection operator saves it to the file.
+5. The file is saved in the TestDir directory.
+
+                                             Assignment 5 
+Modify the script to handle errors, such as the directory already existing or lacking permissions to create files.Add a debugging mode that prints additional information when enabled.
+bash
+#!/bin/bash
+# Set debugging mode (default: off)
+DEBUG=false
+# Set directory name
+DIR="TestDir"
+# Create directory with error handling
+if mkdir "$DIR" 2>/dev/null; then
+  echo "Directory created: $DIR"
+else
+  if [ $? -eq 1 ]; then
+    echo "Error: Directory already exists"
+  else
+    echo "Error: Unable to create directory (permission denied)"
+    exit 1
+  fi
+fi
+# Create files with error handling
+for i in {1..10}; do
+  filename="File$i.txt"
+  if $DEBUG; then
+    echo "Creating file: $filename"
+  fi
+  if echo "$filename" > "$DIR/$filename" 2>/dev/null; then
+    if $DEBUG; then
+      echo "File created: $filename"
+    fi
+  else
+    echo "Error: Unable to create file (permission denied)"
+    exit 1
+fi
+done
+
+Here's what's changed:
+- I added a DEBUG variable that defaults to false. When set to true, it enables debugging mode.
+- I wrapped the mkdir command in an if statement to check if it succeeds. If it fails, I check the error code ($?) to determine the reason:
+    - If the directory already exists (error code 1), I print an error message.
+    - If the error is due to lack of permissions (any other error code), I print an error message and exit the script.
+- I added similar error handling for the echo command that creates the files.
+- In debugging mode, I print additional information when creating files.
+
+                                          Assignment 6 
+Given a sample log file, write a script using grep to extract all lines containing "ERROR". Use awk to print the date, time, and error message of each extracted line.Data Processing wit
+
+bash
+#!/bin/bash
+# Sample log file
+LOGFILE="log.txt"
+# Extract lines containing "ERROR" using grep
+grep "ERROR" "$LOGFILE" | 
+# Use awk to print date, time, and error message
+awk '{print $1, $2, $NF}'
+
+Here's how the script works:
+1. grep searches for lines containing "ERROR" in the log file.
+2. The output is piped to awk, which processes each line.
+3. awk prints the first field ($1, the date), the second field ($2, the time), and the last field ($NF, the error message).
+
+Assuming the log file has the following format:
+2022-01-01 12:00:00 ERROR This is an error message
+2022-01-01 13:00:00 INFO This is an info message
+2022-01-01 14:00:00 ERROR Another error message
+
+The script will output:
+
+2022-01-01 12:00:00 This is an error message
+2022-01-01 14:00:00 Another error message
+
+
+
+
+
+
+
+  
