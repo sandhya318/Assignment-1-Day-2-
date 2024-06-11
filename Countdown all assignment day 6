@@ -1,0 +1,209 @@
+                                              Countdown Timer
+
+ Write a script that uses a while loop to countdown from 10 to 1, printing each number on a new line, and then displays "Boom!" when the countdown reaches zero.
+bash
+#!/bin/bash
+# Initialize the countdown variable
+count=10
+# Start the countdown loop
+while [ $count -gt 0 ]; do
+  # Print the current count
+  echo $count
+  # Decrement the count
+  count=$((count - 1))
+  # Sleep for 1 second
+  sleep 1
+done
+
+# Print the final message
+echo "Boom!"
+
+                                                User Input Validation
+
+Create a script that prompts the user to enter a positive number. Use a while loop to continuously prompt the user until a positive number is entered.
+
+bash
+#!/bin/bash
+# Initialize a variable to store the user's input
+input=""
+
+# Start a while loop to validate the input
+while [ -z "$input" ] || [ $input -lt 0 ]; do
+  # Prompt the user to enter a positive number
+  read -p "Enter a positive number: " input
+
+  # Check if the input is empty or less than 0
+  if [ -z "$input" ]; then
+    echo "Error: Input cannot be empty."
+  elif [ $input -lt 0 ]; then
+    echo "Error: Input must be a positive number."
+  fi
+done
+
+# Print a success message when a positive number is entered
+echo "Success! You entered a positive number: $input"
+
+
+                                             File Processing
+Write a script that reads each line from a file named data.txt and displays each line preceded by a line number, using a while loop.
+
+bash
+#!/bin/bash
+#Initialize a line number variable
+line_number=1
+# Open the file for reading
+while IFS= read -r line; do
+  # Print the line number and line
+  echo "$line_number: $line"
+
+  # Increment the line number
+  line_number=$((line_number + 1))
+done < data.txt
+
+                                    Directory Traversal 
+Create a script that traverses through all files in a directory and its subdirectories, displaying the name and size of each file.
+bash
+#!/bin/bash
+# Set the directory to traverse
+dir=/path/to/directory
+# Traverse through all files in the directory and subdirectories
+find "$dir" -type f -exec bash -c '
+  # Print the file name and size
+  echo "{} - $(stat -c%s {})"
+' \;
+
+                                       Menu System: 
+Implement a simple menu system using a while loop, where the user can select options such as "Add", "Delete", "View", and "Exit". The loop should continue until the user chooses to exit.
+bash
+#!/bin/bash
+while true; do
+  # Display menu options
+  echo "Menu:"
+  echo "1. Add"
+  echo "2. Delete"
+  echo "3. View"
+  echo "4. Exit"
+ # Read user input
+  read -p "Enter your choice: " choice
+
+  # Handle user input
+  case $choice in
+    1) echo "Add option selected";;
+    2) echo "Delete option selected";;
+    3) echo "View option selected";;
+    4) exit 0;;
+    *) echo "Invalid choice";;
+  esac
+done
+
+                                           Password Validation: 
+
+Write a script that prompts the user to enter a password. Use a while loop to repeatedly prompt the user until a valid password (e.g., at least 8 characters with a mix of letters, numbers, and special characters) is entered.
+bash
+#!/bin/bash
+
+while true; do
+  # Prompt the user to enter a password
+  read -s -p "Enter a password: " password
+
+  # Check if the password is valid
+  if [[ $password =~ [a-zA-Z] ]] && [[ $password =~ [0-9] ]] && [[ $password =~ [!@#$%^&*()_+=-{};:'<>,./?"] ]] && [[ ${#password} -ge 8 ]]; then
+    echo "Valid password"
+    break
+  else
+    echo "Invalid password. Please try again."
+  fi
+done
+                              Process Monitoring:
+ Create a script that continuously monitors a specific process (identified by its name or PID) using a while loop. Display a message if the process stops running.
+
+bash
+#!/bin/bash
+
+# Set the process name or PID to monitor
+PROCESS="my_process"
+
+while true; do
+  # Check if the process is running
+  if pgrep -f "$PROCESS" > /dev/null; then
+    # Process is running, do nothing
+    :
+  else
+    # Process is not running, display a message
+    echo "Process $PROCESS has stopped running"
+    break
+  fi
+
+  # Sleep for 1 second before checking again
+  sleep 1
+done
+
+                                            Downloading Files: 
+Write a script that downloads multiple files from a list of URLs stored in a file named urls.txt. Use a while loop to read each URL from the file and download the corresponding file using wget or curl.
+
+bash
+#!/bin/bash
+
+# Set the file containing the URLs
+URLS_FILE="urls.txt"
+
+# Set the download directory
+DOWNLOAD_DIR="downloads"
+
+# Create the download directory if it doesn't exist
+mkdir -p "$DOWNLOAD_DIR"
+
+# Read each URL from the file and download the corresponding file
+while IFS= read -r url; do
+  # Download the file using wget
+  wget -q -O "$DOWNLOAD_DIR/${url##*/}" "$url"
+  # Alternatively, use curl:
+  # curl -s -o "$DOWNLOAD_DIR/${url##*/}" "$url"
+done < "$URLS_FILE"
+
+                              Input File Existence Check: 
+Implement a script that prompts the user to enter the name of a file. Use a while loop to check if the file exists in the current directory. If the file does not exist, prompt the user to enter the filename again.
+
+bash
+#!/bin/bash
+while true; do
+  # Prompt the user to enter the filename
+  read -p "Enter the filename: " filename
+ # Check if the file exists
+  if [ -f "$filename" ]; then
+    echo "File found: $filename"
+    break
+  else
+    echo "File not found. Please try again."
+  fi
+done
+                                             Backup Script:
+ Create a backup script that continuously monitors a directory for changes using a while loop. Whenever a new file is added to the directory, the script should automatically create a backup of that file in a separate directory.
+bash
+#!/bin/bash
+# Set the directory to monitor and the backup directory
+MONITOR_DIR="/path/to/monitor"
+BACKUP_DIR="/path/to/backup"
+# Create the backup directory if it doesn't exist
+mkdir -p "$BACKUP_DIR"
+
+while true; do
+  # Get the current list of files in the monitor directory
+  files_now=$(ls "$MONITOR_DIR")
+
+  # Wait for 1 second
+  sleep 1
+
+  # Get the new list of files in the monitor directory
+  files_new=$(ls "$MONITOR_DIR")
+
+  # Find the new files
+  new_files=$(comm -13 <(sort <<< "$files_now") <(sort <<< "$files_new"))
+
+  # Backup the new files
+  for file in $new_files; do
+    cp "$MONITOR_DIR/$file" "$BACKUP_DIR/"
+  done
+done
+
+
