@@ -1,0 +1,126 @@
+                                                     Assignment 1 
+Analyze a given business scenario and create an ER diagram that includes entities, relationships, attributes, and cardinality. Ensure that the diagram reflects proper normalization up to the third normal form.
+Entities :
+1.Student 
+2.Course 
+ 3.Enrollment 
+
+Attributes:
+Student 
+    a- Student ID 
+    b- Name
+    c- Major
+    d- GPA
+Course 
+   a- Course ID 
+    b- Title
+    c- Credit Hours
+    d- Department
+Enrollment 
+    a- Enrollment ID 
+    b- Student ID 
+    c- Course ID 
+    d- Grade
+
+                                                   Assignment 2  
+create an ER diagram for Digilocker.
+Entities:
+
+- User (U)
+- Document (D)
+- Issuer (I)
+- Repository (R)
+- Authentication (A)
+
+Attributes:
+
+- User (U):
+    - User ID (UID, primary key)
+    - Name
+    - Email
+    - Password
+    - Aadhaar Number
+- Document (D):
+    - Document ID (DID, primary key)
+    - Name
+    - Type (e.g. driving license, passport)
+    - Issue Date
+    - Expiry Date
+    - Document Hash
+- Issuer (I):
+    - Issuer ID (IID, primary key)
+    - Name
+    - Type (e.g. government, institution)
+- Repository (R):
+    - Repository ID (RID, primary key)
+    - Name
+    - Type (e.g. central, state)
+- Authentication (A):
+    - Authentication ID (AID, primary key)
+    - User ID (UID, foreign key)
+- Authentication Type (e.g. OTP, fingerprint)
+    - Authentication Data
+
+                                                 Assignment 3  
+
+Create an ER diagram for car rental system.
+Entities and Attributes:
+1.	Customer
+o	CustomerID (Primary Key)
+o	Name
+o	Address
+o	Phone
+2.	Car
+o	CarID (Primary Key)
+o	Model
+o	Make
+o	Year
+o	status
+3.	Rental
+o	RentalID (Primary Key)
+o	CustomerID (Foreign Key)
+o	CarID (Foreign Key)
+o	RentalDate
+o	ReturnDate
+4.	Location
+            Location id 
+            Address 
+5.	Car location 
+          Car id 
+          Location id 
+ 
+
+                                             Assignment 4 
+Design a database schema for a library system, including tables, fields, and constraints like NOT NULL, UNIQUE, and CHECK. Include primary and foreign keys to establish relationships between tables.
+Tables:
+
+1. Books
+    - Book_ID (primary key, NOT NULL, UNIQUE)
+    - Title (NOT NULL)
+    - Author (NOT NULL)
+    - Publisher (NOT NULL)
+    - Year (NOT NULL, CHECK (Year >= 1900))
+    - ISBN (NOT NULL, UNIQUE)
+2. Patrons
+    - Patron_ID (primary key, NOT NULL, UNIQUE)
+    - Name (NOT NULL)
+    - Email (NOT NULL, UNIQUE)
+    - Phone (NOT NULL)
+    - Address (NOT NULL)
+3. Loans
+    - Loan_ID (primary key, NOT NULL, UNIQUE)
+    - Book_ID (foreign key, NOT NULL)
+    - Patron_ID (foreign key, NOT NULL)
+    - Loan_Date (NOT NULL)
+    - Due_Date (NOT NULL, CHECK (Due_Date >= Loan_Date))
+    - Return_Date (NULL)
+4. Authors
+    - Author_ID (primary key, NOT NULL, UNIQUE)
+    - Name (NOT NULL)
+5. Publishers
+    - Publisher_ID (primary key, NOT NULL, UNIQUE)
+    - Name (NOT NULL)
+ 
+ 
+
+
