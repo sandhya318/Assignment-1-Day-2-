@@ -1,0 +1,85 @@
+                                          Assignment 1 
+
+the Library System database design in the form of SQL queries
+create table product(Pname varchar(20) primary key, price float NOT NULL,category varchar(20) CHECK(category in("Gadget","Photography","Household")), manufacturer varchar(20));
+
+1.Authors ( Author_ID (primary key), Name)
+2.Publishers ( Publisher_ID (primary key),Name)
+3.Books (Book_ID (primary key),Title, Author_ID(foreign key), Publisher_ID (foreign key),Year,ISBN 
+4.Patrons (Patron_ID (primary key),Name,Email,Phone,Address)
+5.Loans (Loan_ID (primary key), Book_ID (foreign key), Patron_ID (foreign key), Loan_Date,               Due_Date, Return_Date
+6.Products (Product_ID (primary key),Pname,Price,Category,Manufacturer
+
+1.CREATE TABLE Authors (
+  Author_ID INT PRIMARY KEY,
+  Name VARCHAR(50) NOT NULL
+);
+
+2.CREATE TABLE Publishers (
+  Publisher_ID INT PRIMARY KEY,
+  Name VARCHAR(50) NOT NULL
+);
+
+3.CREATE TABLE Books (
+  Book_ID INT PRIMARY KEY,
+  Title VARCHAR(100) NOT NULL,
+  Author_ID INT,
+  Publisher_ID INT,
+  Year INT NOT NULL CHECK (Year >= 1900),
+  ISBN VARCHAR(20) NOT NULL UNIQUE,
+  FOREIGN KEY (Author_ID) REFERENCES Authors(Author_ID),
+  FOREIGN KEY (Publisher_ID) REFERENCES Publishers(Publisher_ID)
+);
+
+4.CREATE TABLE Patrons (
+  Patron_ID INT PRIMARY KEY,
+  Name VARCHAR(50) NOT NULL,
+  Email VARCHAR(100) NOT NULL UNIQUE,
+  Phone VARCHAR(20) NOT NULL,
+  Address VARCHAR(255) NOT NULL
+);
+5.CREATE TABLE Loans (
+  Loan_ID INT PRIMARY KEY,
+  Book_ID INT NOT NULL,
+  Patron_ID INT NOT NULL,
+  Loan_Date DATE NOT NULL,
+  Due_Date DATE NOT NULL CHECK (Due_Date >= Loan_Date),
+  Return_Date DATE,
+  FOREIGN KEY (Book_ID) REFERENCES Books(Book_ID),
+  FOREIGN KEY (Patron_ID) REFERENCES Patrons(Patron_ID)
+);
+6. CREATE TABLE Products (
+  Product_ID INT PRIMARY KEY,
+  Pname VARCHAR(20) NOT NULL,
+  Price FLOAT NOT NULL,
+  Category VARCHAR(20) CHECK(Category in("Gadget","Photography","Household")),
+  Manufacturer VARCHAR(20)
+);
+
+
+                                           Assignment 2 
+
+Write SQL queries ; 
+1.List the details of all companies 
+Select *from compdtls;
+2.List the registration data of all companies 
+Select regdate from compdtls;
+3.Show the details of the all companies of Japan
+Select *from compdtls where country=’Japan’;
+4.List the company name whose stock price is 65
+Select compname from compdtls where stockprice=65;
+5.List the companies of Japan or india 
+Select *from compdtls where IN (‘japan’.’india’);
+6.Show the maximum stock price 
+Select Max(stockprice) AS max_stock_price from compdtls;
+7.Show the average of stock price 
+Select avg(stockprice) AS avg_stock_price from compdtls
+8.Show the distinct countries 
+Select DISTINCT country from compdtls;
+9.Show the total no of countries 
+Select count(DISTINCT country )AS total_countries  from compdtls;
+10.Show the company name whose country name ends with ‘a’
+Select compname ,country from compdtls where country LIKE ‘%a’;
+
+
+
