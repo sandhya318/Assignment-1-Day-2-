@@ -1,0 +1,94 @@
+                                                 Assignment 3 
+1.	what is makefile? write c program to demonstrate makefile.
+A Makefile is a build automation tool that allows you to compile and link programs by specifying dependencies between source files and targets. It's commonly used in C and C++ programming.
+ Makefile and a C program to demonstrate its use:
+Makefile:
+CC=gcc
+hello: hello.c
+	$(CC) -o hello hello.c
+hello.c:
+#include <stdio.h>
+int main() {
+	printf("Hello, World!\n");
+	return 0;
+}
+
+1. Save the Makefile and hello.c in the same directory.
+2. Open a terminal and navigate to that directory.
+3. Run the command make to build the program.
+4. The Makefile will compile hello.c and create an executable file called hello.
+5. Run the program by typing ./hello in the terminal.
+
+Explanation:
+- CC=gcc sets the C compiler to gcc.
+- hello: hello.c specifies that the target hello depends on the source file hello.c.
+- $(CC) -o hello hello.c compiles hello.c and links it to create the executable hello.
+
+2.	Write a c program to demonstrate relational, logical and bitwise operators.
+
+#include <stdio.h>
+int main() {
+    int a = 5;
+    int b = 3;
+    int c = 0x0005; // binary: 00000101
+    int d = 0x0003; // binary: 00000011
+
+    // Relational Operators
+    printf("a == b: %d\n", a == b); // 0 (false)
+    printf("a != b: %d\n", a != b); // 1 (true)
+    printf("a > b: %d\n", a > b); // 1 (true)
+    printf("a < b: %d\n", a < b); // 0 (false)
+    printf("a >= b: %d\n", a >= b); // 1 (true)
+    printf("a <= b: %d\n", a <= b); // 0 (false)
+
+    // Logical Operators
+    printf("(a > b) && (a != 0): %d\n", (a > b) && (a != 0)); // 1 (true)
+    printf("(a > b) || (a == 0): %d\n", (a > b) || (a == 0)); // 1 (true)
+    printf("!(a > b): %d\n", !(a > b)); // 0 (false)
+
+    // Bitwise Operators
+    printf("c & d: %x\n", c & d); // 00000001
+    printf("c | d: %x\n", c | d); // 00000111
+    printf("c ^ d: %x\n", c ^ d); // 00000110
+    printf("~c: %x\n", ~c); // ffffffa6
+
+    return 0;
+}
+
+3.	Explain storage classes with an example.
+
+1. Auto: Variables defined inside a function with the auto storage class have local scope and automatic duration. They are created when the function is called and destroyed when the function returns.
+
+Example:
+                   void myFunction() {
+    auto int x = 5; // x is only accessible within myFunction
+    printf("%d", x); // prints 5
+}
+
+1. Static: Variables defined with the static storage class have local scope but retain their value between function calls.
+
+Example:
+void myFunction() {
+    static int x = 5; // x retains its value between function calls
+    x++;
+    printf("%d", x); // prints 6, 7, 8, ... on subsequent calls
+}
+
+1. Extern: Variables defined with the extern storage class have global scope and can be accessed from any part of the program.
+Example:
+extern int x; // declares x as an external variable
+int x = 5; // defines x
+
+void myFunction() {
+    printf("%d", x); // prints 5
+}
+
+1. Register: Variables defined with the register storage class are stored in the CPU's registers, making access faster. However, the compiler may ignore this storage class if it cannot allocate a register for the variable.
+
+Example:
+             void myFunction() {
+    register int x = 5; // x is stored in a CPU register
+    printf("%d", x); // prints 5
+}
+
+
