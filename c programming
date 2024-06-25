@@ -1,0 +1,24 @@
+1.Write a note on history of c programming . 
+
+1969: Dennis Ritchie and Brian Kernighan started working on a new programming language at Bell Labs.
+1972: They released the first version of C, called C01.
+1973: They improved C and released C02.
+1978: C03 was released, which became the basis for modern C.
+1989: The American National Standards Institute (ANSI) standardized C, making it a widely accepted language.
+1990: C became super popular and was used in many applications, including operating systems, databases, and web browsers.
+1999: C99 was released, adding new features and improvements.
+2011: C11 was released, further enhancing the language.
+
+2.write any 5 features and applications of c programming. 
+Features:
+1. Portability: C programs can run on different types of computers.
+2. Efficiency: C programs are fast and use computer resources wisely.
+3. Flexibility: C can be used for many different types of projects.
+4. Structured programming: C helps you organize your code in a logical way.
+5. Memory management: C lets you control how your program uses computer memory.
+Applications:
+1. Operating Systems: C is used to build the software that runs your computer.
+2. Web Browsers: C is used to build the web browsers you use to access the internet.
+3. Databases: C is used to build the software that stores and manages data.
+4. Games: C is used to build games for PCs and consoles.
+5. Embedded Systems: C is used to build the software that runs on devices like robots, appliances, and cars.
