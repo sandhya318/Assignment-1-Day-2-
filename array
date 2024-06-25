@@ -1,0 +1,156 @@
+                                         Assignment 6 
+write a c program to find the second largest element in the array.
+#include <stdio.h>
+
+int main() {
+    int arr[] = {5, 2, 8, 3, 1, 6, 4};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int max = arr[0];
+    int second_max = arr[0];
+
+    for (int i = 1; i < n; i++) {
+        if (arr[i] > max) {
+            second_max = max;
+            max = arr[i];
+        } else if (arr[i] > second_max && arr[i] != max) {
+            second_max = arr[i];
+        }
+    }
+
+    printf("Second largest element: %d\n", second_max);
+
+    return 0;
+}
+
+2. write a c program to find reverse in array.
+#include <stdio.h>
+
+void reverse_array(int arr[], int n) {
+    int i, j;
+    for (i = 0, j = n - 1; i < j; i++, j--) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
+
+int main() {
+    int arr[] = {1, 2, 3, 4, 5, 6, 7};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Original array: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    reverse_array(arr, n);
+
+    printf("Reversed array: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+3. write a c program to sort even or odd elements of array separately.
+#include <stdio.h>
+
+void sort_even_odd(int arr[], int n) {
+    int even[n], odd[n];
+    int even_count = 0, odd_count = 0;
+
+    // Separate even and odd elements
+    for (int i = 0; i < n; i++) {
+        if (arr[i] % 2 == 0) {
+            even[even_count++] = arr[i];
+        } else {
+            odd[odd_count++] = arr[i];
+        }
+    }
+
+    // Sort even elements
+    for (int i = 0; i < even_count - 1; i++) {
+        for (int j = i + 1; j < even_count; j++) {
+            if (even[i] > even[j]) {
+                int temp = even[i];
+                even[i] = even[j];
+                even[j] = temp;
+            }
+        }
+    }
+
+    // Sort odd elements
+    for (int i = 0; i < odd_count - 1; i++) {
+        for (int j = i + 1; j < odd_count; j++) {
+            if (odd[i] > odd[j]) {
+                int temp = odd[i];
+                odd[i] = odd[j];
+                odd[j] = temp;
+            }
+        }
+    }
+
+    // Merge sorted even and odd elements
+    int k = 0;
+for (int i = 0; i < even_count; i++) {
+        arr[k++] = even[i];
+    }
+    for (int i = 0; i < odd_count; i++) {
+        arr[k++] = odd[i];
+    }
+}
+
+int main() {
+    int arr[] = {5, 2, 8, 3, 1, 6, 4};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    sort_even_odd(arr, n);
+
+    printf("Sorted array: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+
+4. write a c program to right rotate an array.
+#include <stdio.h>
+
+void right_rotate(int arr[], int n, int k) {
+    k = k % n;
+    int temp[n];
+    for (int i = 0; i < n; i++) {
+        temp[(i + k) % n] = arr[i];
+    }
+    for (int i = 0; i < n; i++) {
+        arr[i] = temp[i];
+    }
+}
+
+int main() {
+    int arr[] = {1, 2, 3, 4, 5, 6, 7};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int k = 3;
+
+    printf("Original array: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    right_rotate(arr, n, k);
+
+    printf("Right rotated array: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+
+
