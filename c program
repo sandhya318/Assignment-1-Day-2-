@@ -1,0 +1,91 @@
+explain basic structure of a c program with an example
+
+1. Preprocessor directives: Used to include header files and define macros.
+2. Global declarations: Used to declare global variables and functions.
+3. Main function: The entry point of the program, where execution begins.
+4. Functions: Used to perform specific tasks.
+5. Return statement: Used to exit the program and return a value.
+#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\n");
+    return 0;
+}
+
+- #include <stdio.h>: Includes the standard input/output header file.
+- int main() { ... }: Defines the main function, the entry point of the program.
+- printf("Hello, World!\n");: Prints "Hello, World!" to the console using the printf function.
+- return 0;: Exits the program and returns a value of 0, indicating successful execution.
+
+This program will output "Hello, World!" when run.
+#include <stdio.h>
+int main() {
+    printf("Hello!");
+    return 0;
+}
+
+2. what are the difference types data types in c programming.
+
+1. Integers: Whole numbers, like 1, 2, or 3.
+2. Floats: Decimal numbers, like 3.14 or -0.5.
+3. Characters: Single letters or symbols, like 'a' or '$'.
+4. Boolean: True or false values.
+5. Strings: A collection of characters, like "hello" or "goodbye".
+6. Arrays: A list of values of the same type, like [1, 2, 3] or ["a", "b", "c"].
+7. Pointers: A variable that holds the memory address of another variable.
+8. Structs: A collection of variables of different types, like a person's name, age, and address.
+9. Enums: A list of named values, like colors (RED, GREEN, BLUE).
+
+3. Define macro. write a c program to demonstrate user define macro
+
+A macro in C programming is a sequence of tokens that can be expanded into a longer code sequence. Macros are defined using the #define directive and can be used to simplify code, reduce repetition, and increase readability.
+Program:
+#include <stdio.h>
+// Define a macro to calculate the square of a number
+#define SQUARE(x) ((x) * (x))
+int main() {
+    int num = 5;
+    int result = SQUARE(num); // Use the macro to calculate the square of num
+    printf("The square of %d is %d\n", num, result);
+    return 0;
+}
+In this program, the macro SQUARE(x) is defined to calculate the square of a number x. The macro is then used in the main() function to calculate the square of the variable num.
+When the program is compiled, the macro SQUARE(num) is expanded into the code ((num) * (num)), which is then executed to calculate the square of num.
+output:
+The square of 5 is 25
+
+4.write a c program to demonstrate printf(),scanf(),fgets() and puts()with an example 
+include <stdio.h>
+
+int main() {
+    int num;
+    char name[20];
+
+    // printf() example
+    printf("Enter your name: ");
+
+    // scanf() example
+    scanf("%s", name);
+
+    // fgets() example
+    printf("Enter your age: ");
+    char age[10];
+    fgets(age, 10, stdin);
+
+    // printf() example
+    printf("Hello, %s! You are %s years old.\n", name, age);
+
+    // puts() example
+    puts("Goodbye!");
+
+    return 0;
+}
+
+Here's how the program works:
+
+1. printf() is used to print a message asking the user to enter their name.
+2. scanf() is used to read the user's input and store it in the name variable.
+3. printf() is used again to ask the user to enter their age.
+4. fgets() is used to read the user's input and store it in the age variable.
+5. printf() is used again to print a message that includes the user's name and age.
+6. puts() is used to print a goodbye message.
