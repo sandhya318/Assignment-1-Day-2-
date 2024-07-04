@@ -1,0 +1,291 @@
+                                                   Assignment 
+1 . write a namespaces for bookmanager and membermanager .
+namespace BookManager {
+    class Book {
+    public:
+        std::string title;
+        std::string author;
+        int year;
+    };
+
+    class Bookshelf {
+    public:
+        std::vector<Book> books;
+
+        void addBook(const Book& book) {
+            books.push_back(book);
+        }
+
+        void removeBook(const Book& book) {
+            auto it = std::find(books.begin(), books.end(), book);
+            if (it != books.end()) {
+                books.erase(it);
+            }
+        }
+    };
+}
+
+namespace MemberManager {
+    class Member {
+    public:
+        std::string name;
+        std::string email;
+    };
+class Membership {
+    public:
+        std::vector<Member> members;
+void addMember(const Member& member) {
+            members.push_back(member);
+        }
+
+        void removeMember(const Member& member) {
+            auto it = std::find(members.begin(), members.end(), member);
+            if (it != members.end()) {
+                members.erase(it);
+            }
+        }
+    };
+}
+
+int main() {
+    BookManager::Bookshelf bookshelf;
+    BookManager::Book book1 = {"Title1", "Author1", 2020};
+    BookManager::Book book2 = {"Title2", "Author2", 2021};
+    bookshelf.addBook(book1);
+    bookshelf.addBook(book2);
+
+    MemberManager::Membership membership;
+    MemberManager::Member member1 = {"Name1", "email1"};
+    MemberManager::Member member2 = {"Name2", "email2"};
+    membership.addMember(member1);
+    membership.addMember(member2);
+
+    return 0;
+}
+
+2. write funcations for addbook,removebook and displaybooks .
+void BookManager::Bookshelf::addBook(const Book& book) {
+    books.push_back(book);
+}
+
+void BookManager::Bookshelf::removeBook(const Book& book) {
+    auto it = std::find(books.begin(), books.end(), book);
+    if (it != books.end()) {
+        books.erase(it);
+    }
+}
+
+void BookManager::Bookshelf::displayBooks() const {
+    for (const auto& book : books) {
+        std::cout << "Title: " << book.title << std::endl;
+        std::cout << "Author: " << book.author << std::endl;
+        std::cout << "Year: " << book.year << std::endl;
+        std::cout << "------------------------" << std::endl;
+    }
+}
+You can use these functions like this:
+
+
+int main() {
+    BookManager::Bookshelf bookshelf;
+
+    BookManager::Book book1 = {"Title1", "Author1", 2020};
+    BookManager::Book book2 = {"Title2", "Author2", 2021};
+
+    bookshelf.addBook(book1);
+    bookshelf.addBook(book2);
+
+    bookshelf.displayBooks();
+
+    bookshelf.removeBook(book1);
+
+    bookshelf.displayBooks();
+
+    return 0;
+}
+
+
+output:
+Title: Title1
+Author: Author1
+Year: 2020
+------------------------
+Title: Title2
+Author: Author2
+Year: 2021
+
+3. Data structures :array to store books and members .
+#include <iostream>
+
+int main() {
+    BookManager::Bookshelf bookshelf;
+    BookManager::Book book1 = {"Title1", "Author1", 2020};
+    BookManager::Book book2 = {"Title2", "Author2", 2021};
+
+    bookshelf.addBook(book1);
+    bookshelf.addBook(book2);
+
+    bookshelf.displayBooks();
+
+    bookshelf.removeBook(book1);
+
+    bookshelf.displayBooks();
+
+    MemberManager::Membership membership;
+    MemberManager::Member member1 = {"Name1", "email1"};
+    MemberManager::Member member2 = {"Name2", "email2"};
+
+    membership.addMember(member1);
+    membership.addMember(member2);
+
+    membership.displayMembers();
+
+    membership.removeMember(member1);
+
+    membership.displayMembers();
+
+    return 0;
+}
+
+4. In the main() use the namespaces bookmanager and membermanger to access the member funcations .
+
+int main() {
+    using namespace BookManager;
+    using namespace MemberManager;
+
+    Bookshelf bookshelf;
+    Book book1 = {"Title1", "Author1", 2020};
+    Book book2 = {"Title2", "Author2", 2021};
+
+    bookshelf.addBook(book1);
+    bookshelf.addBook(book2);
+
+    bookshelf.displayBooks();
+
+    bookshelf.removeBook(book1);
+
+    bookshelf.displayBooks();
+
+    Membership membership;
+    Member member1 = {"Name1", "email1"};
+    Member member2 = {"Name2", "email2"};
+
+    membership.addMember(member1);
+    membership.addMember(member2);
+
+    membership.displayMembers();
+
+    membership.removeMember(member1);
+
+    membership.displayMembers();
+
+    return 0;
+}
+
+Book Added :1988 by Chetan Bhagat 
+BookManager::Book book;
+book.title = "1988";
+book.author = "Chetan Bhagat";
+book.year = 1988;
+
+BookManager::Bookshelf bookshelf;
+bookshelf.addBook(book);
+
+std::cout << "Book Added: " << book.title << " by " << book.author << std::endl;
+
+Book Added: c by Balaguruswamy
+BookManager::Book book;
+book.title = "C";
+book.author = "Balaguruswamy";
+book.year = 0; // or some other appropriate value
+
+BookManager::Bookshelf bookshelf;
+bookshelf.addBook(book);
+
+std::cout << "Book Added: " << book.title << " by " << book.author << std::endl;
+
+Member Added:Allan 
+MemberManager::Member member;
+member.name = "Allan";
+member.email = ""; // or some other appropriate value
+
+MemberManager::Membership membership;
+membership.addMember(member);
+
+std::cout << "Member Added: " << member.name << std::endl;
+Member Added: Bob 
+MemberManager::Member member;
+member.name = "Bob";
+member.email = ""; // or some other appropriate value
+
+MemberManager::Membership membership;
+membership.addMember(member);
+
+std::cout << "Member Added: " << member.name << std::endl;
+
+Display Books in Library: 
+void displayBooks(const BookManager::Bookshelf& bookshelf) {
+    for (const auto& book : bookshelf.getBooks()) {
+        std::cout << "Title: " << book.title << std::endl;
+        std::cout << "Author: " << book.author << std::endl;
+        std::cout << "Year: " << book.year << std::endl;
+        std::cout << "------------------------" << std::endl;
+    }
+}
+
+int main() {
+    BookManager::Bookshelf bookshelf;
+    // add books to bookshelf
+    displayBooks(bookshelf);
+    return 0;
+}
+Display Members :
+void displayMembers(const MemberManager::Membership& membership) {
+    for (const auto& member : membership.getMembers()) {
+        std::cout << "Name: " << member.name << std::endl;
+        std::cout << "Email: " << member.email << std::endl;
+        std::cout << "------------------------" << std::endl;
+    }
+}
+
+int main() {
+    MemberManager::Membership membership;
+    // add members to membership
+    displayMembers(membership);
+    return 0;
+}
+
+Remove the book:
+void removeBook(BookManager::Bookshelf& bookshelf, const std::string& title) {
+    for (auto it = bookshelf.getBooks().begin(); it != bookshelf.getBooks().end(); ++it) {
+        if (it->title == title) {
+            bookshelf.getBooks().erase(it);
+            std::cout << "Book Removed: " << title << std::endl;
+            return;
+        }
+    }
+    std::cout << "Book not found: " << title << std::endl;
+}
+
+int main() {
+    BookManager::Bookshelf bookshelf;
+    // add books to bookshelf
+    removeBook(bookshelf, "1984"); // remove the book with title "1984"
+    return 0;
+}
+Display the book : 
+void displayBook(const Book& book) {
+    std::cout << "Title: " << book.title << std::endl;
+    std::cout << "Author: " << book.author << std::endl;
+    std::cout << "Year: " << book.year << std::endl;
+    std::cout << "------------------------" << std::endl;
+}
+Book book = {"1984", "George Orwell", 1984};
+displayBook(book);
+
+This would output:
+
+Title: 1984
+Author: George Orwell
+Year: 1984
+----------------------
