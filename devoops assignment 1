@@ -1,0 +1,137 @@
+                                                              Assignment 1 
+
+1.WRITE A DOCKER FILE FOR DEPLOYING NGINX IMAGE WITH NETFLIX HOMEPAGE AND PUSH IMAGE TO DOCKERHUB
+FROM nginx:latest
+# Copy the Netflix homepage HTML file
+COPY index.html /usr/share/nginx/html/
+# Expose the port
+EXPOSE 80
+# Run the command to start Nginx
+CMD ["nginx", "-g", "daemon off;"]
+ build and push the image to Docker Hub:
+1. Build the image:
+docker build -t wipro: v1 .
+2. Tag the image with your Docker Hub username and repository name:
+docker tag wipro: v1 sandhya318/ wiprodevops:v1
+3. Push the image to Docker Hub:
+docker push sandhya318/ wiprodevops:v1
+
+2.CREATE A KUBERNETES DEPLOYMENT WITH DOCKER PUSHED IMAGE AND EXPOSE DEPLOYMENT VIA LOAD BALANCER
+
+Step 1:  Create a Dockerfile with the following content:
+FROM nginx:latest
+COPY index.html /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+2. Build the image with the following command:
+docker build -t wipro:v1 .
+
+Step 2: Push the image to Docker Hub
+Docker push sandhya318/wiprodevops:v1  
+
+2.Tag the image with the following command:
+docker tag wipro:v1 sandhya318/wiprodevops:v1
+2.Push the image to Docker Hub with the following command:
+docker push <your-username>/my-nginx-image:latest
+
+Step 3: Create a Kubernetes deployment YAML file (deployment.yaml)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: wipro
+spec:
+replicas: 3
+selector:
+matchLabels:
+app: wipro
+template:
+metadata:
+labels:
+app: wipro
+spec:
+containers:
+- name: nginx
+image: nginx:latest
+ports:
+- containerPort: 80
+
+Step 4: Apply the deployment YAML file
+kubectl apply -f deployment.yaml
+
+expose the deployment.yaml 
+kubectl expose deployment wipro – -port 80 - - type Loadbalancer - - dry -run -o yaml  
+
+Step 5: Create a Kubernetes service YAML file (service.yaml)
+apiVersion: v1
+kind: Service
+metadata:
+name: my-nginx-service
+spec:
+type: LoadBalancer
+ports:
+- name: http
+port: 80
+targetPort: 80
+selector:
+app: my-nginx-app
+Step 6: Apply the service YAML file
+kubectl apply -f service.yaml
+Step 7: Get the load balancer's external IP
+kubectl get services
+
+3) CREATE A MULTI CONTAINER APPLICATION USING DOCKER COMPOSE.
+ 
+1: Create a directory for your project 
+mkdir wipro
+cd wipro
+2: Create a file named docker-compose.yml 
+version: '3'
+services:
+  web:
+    build: ./web
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://user:password@db:5432/database
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=database
+  redis:
+    image: redis
+
+ 3: Create a directory for your web service:
+mkdir web
+cd web
+4: Create a file named Dockerfile :
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["python", "(link unavailable)"]
+5: Create a file named requirements.txt:
+flask
+sqlalchemy
+ 6: Create a file named (link unavailable) with your web application code:
+from flask import Flask, jsonify
+from sqlalchemy import create_engine
+
+app = Flask(__name__)
+engine = create_engine('postgresql://user:password@db:5432/database')
+@app.route('/')
+def index():
+    return jsonify({'message': 'Hello from Flask!'})
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80)
+
+7: Build the web service image:
+docker-compose build
+ 8: Start the application:
+docker-compose up
+
