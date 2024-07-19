@@ -1,0 +1,214 @@
+                                              Assignment 2
+TASK : SCALE THE DELUYMENT OF TOMCAT USING HORIZONTAL POD AUTOSCALE.
+
+1. Create a deployment for Tomcat:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: tomcat-deployment
+spec:
+replicas: 3
+selector:
+matchLabels:
+app: tomcat
+template:
+metadata:
+labels:
+app: tomcat
+spec:
+containers:
+- name: tomcat
+image: tomcat:latest
+ports:
+- containerPort: 8080
+
+1. Create a service for Tomcat:
+
+apiVersion: v1
+kind: Service
+metadata:
+name: tomcat-service
+spec:
+type: LoadBalancer
+ports:
+- name: http
+port: 80
+targetPort: 8080
+selector:
+app: tomcat
+
+1. Create a Horizontal Pod Autoscaler (HPA) for the Tomcat deployment:
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+name: tomcat-hpa
+spec:
+scaleTargetRef:
+apiVersion: apps/v1
+kind: Deployment
+name: tomcat-deployment
+minReplicas: 3
+maxReplicas: 10
+metrics:
+- type: Resource
+resource:
+name: cpu
+target:
+type: Utilization
+averageUtilization: 50
+
+1. Apply the YAML files to create the deployment, service, and HPA:
+
+kubectl apply -f deployment.yaml service.yaml hpa.yaml
+
+1. Verify that the HPA is working:
+kubectl get hpa
+kubectl describe hpa tomcat-hpa
+
+TASK -1  : SCALE THE DEPLOYMENT OF TOMCAT USING HORIZONTAL POD AUTOSCALER
+
+Step 1: Create a deployment for Tomcat
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: tomcat-deployment
+spec:
+replicas: 3
+selector:
+matchLabels:
+app: tomcat
+template:
+metadata:
+labels:
+app: tomcat
+spec:
+containers:
+- name: tomcat
+image: tomcat:latest
+ports:
+- containerPort: 8080
+
+Step 2: Apply the deployment YAML file
+
+kubectl apply -f deployment.yaml
+
+Step 3: Create a Horizontal Pod Autoscaler (HPA) for the Tomcat deployment
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+name: tomcat-hpa
+spec:
+scaleTargetRef:
+apiVersion: apps/v1
+kind: Deployment
+name: tomcat-deployment
+minReplicas: 3
+maxReplicas: 10
+metrics:
+- type: Resource
+resource:
+name: cpu
+target:
+type: Utilization
+averageUtilization: 50
+
+Step 4: Apply the HPA YAML file
+kubectl apply -f hpa.yaml
+
+Step 5: Verify that the HPA is working
+kubectl get hpa
+kubectl describe hpa tomcat-hpa
+
+TASK -1  : SCALE THE DEPLOYMENT OF TOMCAT USING HORIZONTAL POD AUTOSCALER BY TAKING THE WAR FILE OF TOMCAT FROM PV BY CREATING A PVC
+Step 1: Create a Persistent Volume (PV)
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+name: tomcat-pv
+spec:
+capacity:
+storage: 1Gi
+accessModes:
+- ReadWriteOnce
+persistentVolumeReclaimPolicy: Retain
+local:
+path: /mnt/data
+storageClassName: local-storage
+
+Step 2: Create a Persistent Volume Claim (PVC)
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+name: tomcat-pvc
+spec:
+accessModes:
+- ReadWriteOnce
+resources:
+requests:
+storage: 1Gi
+storageClassName: local-storage
+
+Step 3: Create a deployment for Tomcat
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+name: tomcat-deployment
+spec:
+replicas: 3
+selector:
+matchLabels:
+app: tomcat
+template:
+metadata:
+labels:
+app: tomcat
+spec:
+containers:
+- name: tomcat
+image: tomcat:latest
+volumeMounts:
+- name: tomcat-pvc
+mountPath: /usr/local/tomcat/webapps
+ports:
+- containerPort: 8080
+volumes:
+- name: tomcat-pvc
+persistentVolumeClaim:
+claimName: tomcat-pvc
+
+Step 4: Create a Horizontal Pod Autoscaler (HPA) for the Tomcat deployment
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+name: tomcat-hpa
+spec:
+scaleTargetRef:
+apiVersion: apps/v1
+kind: Deployment
+name: tomcat-deployment
+minReplicas: 3
+maxReplicas: 10
+metrics:
+- type: Resource
+resource:
+name: cpu
+target:
+type: Utilization
+averageUtilization: 50
+
+Step 5: Apply the YAML files
+
+kubectl apply -f pv.yaml pvc.yaml deployment.yaml hpa.yaml
+
+Step 6: Verify that the HPA is working
+kubectl get hpa
+kubectl describe hpa tomcat-hpa
+
+
