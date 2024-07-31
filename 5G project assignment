@@ -1,0 +1,697 @@
+                                                                 Assignment 1: 
+
+Understanding SDAP Architecture
+Overall Structure of the SDAP Layer
+The SDAP (Service Data Adaptation Protocol) layer in the 5G NR protocol stack sits between the PDCP (Packet Data Convergence Protocol) layer and the upper layers, such as the NAS (Non-Access Stratum). The SDAP layer's primary function is to map the QoS (Quality of Service) flows to DRBs (Data Radio Bearers), ensuring that each flow receives the appropriate treatment according to its QoS requirements.
+
+ Role of SDAP Entities
+SDAP entities manage the mapping of QoS flows to DRBs within a PDU session. Each SDAP entity is responsible for one PDU session and handles multiple QoS flows within that session. The SDAP entity ensures that packets are marked with the correct QoS Flow Identifier (QFI) and that they are transmitted over the appropriate DRB.
+
+Mapping QoS Flows to DRBs
+1.Identify the QoS Flow: Each QoS flow is identified by a unique QFI.
+2. Determine the QoS Requirements: The QoS requirements for the flow are determined based on the QFI.
+3. Map to Appropriate DRB: The SDAP entity maps the QoS flow to a DRB that can satisfy the QoS requirements.
+Test Case 1: Establishing and Releasing an SDAP Entity
+Establishing an SDAP Entity
+Cpp 
+#include <iostream>
+
+class SDAPEntity {
+public:
+    SDAPEntity(int sessionId) : sessionId(sessionId) {
+        std::cout << "SDAP Entity established for session " << sessionId << std::endl;
+    }
+
+    void release() {
+        std::cout << "SDAP Entity released for session " << sessionId << std::endl;
+    }
+
+private:
+    int sessionId;
+};
+
+int main() {
+    int sessionId = 101;
+    SDAPEntity sdapEntity(sessionId);
+    // Perform operations
+    sdapEntity.release();
+    return 0;
+}
+```
+Releasing an SDAP Entity
+
+The release process involves cleaning up the resources associated with the SDAP entity, ensuring that there are no memory leaks or resource conflicts.
+Test Case 3: Data Transfer in Downlink
+
+```cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDU {
+    int qfi; // QoS Flow Identifier
+    std::vector<uint8_t> payload; // Actual data
+};
+
+void downlinkDataTransfer(const SDAPPDU& pdu) {
+    std::cout << "Downlink Data Transfer with QFI " << pdu.qfi << std::endl;
+    // Handle downlink data transfer
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDU pdu = {1, {0x01, 0x02, 0x03}};
+    downlinkDataTransfer(pdu);
+    return 0;
+}
+```
+Test Case 4: Data Transfer in Uplink
+
+```cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDU {
+    int qfi; // QoS Flow Identifier
+    std::vector<uint8_t> payload; // Actual data
+};
+
+void uplinkDataTransfer(const SDAPPDU& pdu) {
+    std::cout << "Uplink Data Transfer with QFI " << pdu.qfi << std::endl;
+    // Handle uplink data transfer
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDU pdu = {2, {0x01, 0x02, 0x03}};
+    uplinkDataTransfer(pdu);
+    return 0;
+}
+
+Mapping QoS Flow to DRB
+`cpp
+#include <iostream>
+#include <map>
+
+// Example of mapping QoS flows to DRBs
+int mapQoSToDRB(int qfi) {
+    std::map<int, int> qosToDrbMap = {
+        {1, 1}, // QFI 1 -> DRB 1
+        {2, 2}, // QFI 2 -> DRB 2
+        {3, 3}  // QFI 3 -> DRB 3
+    };
+    return qosToDrbMap[qfi];
+}
+
+int main() {
+    int qfi = 1;
+    int drb = mapQoSToDRB(qfi);
+    std::cout << "QFI " << qfi << " is mapped to DRB " << drb << std::endl;
+    return 0;
+}
+Summary
+The SDAP layer is a crucial component in the 5G NR protocol stack, responsible for mapping QoS flows to DRBs, managing QoS parameters, and ensuring that data is transmitted according to its QoS requirements. The provided C++ code examples illustrate the establishment and release of SDAP entities, data transfer in downlink and uplink, and mapping QoS flows to DRBs. These concepts are essential for maintaining the quality of service in a 5G network.
+
+                                                                        
+                                                                               Assignment 2: 
+
+SDAP Services and Functions. 
+Services Provided by the SDAP Layer to Upper Layers
+
+1.QoS Flow Management
+  Description: The SDAP layer manages the QoS flows, ensuring that each flow receives the appropriate QoS treatment.
+  Example: Differentiating between video, voice, and data traffic to provide the required bandwidth and latency.
+
+2. Reflective Qos
+Description: The SDAP layer supports reflective QoS, which allows the UE to use QoS parameters observed in downlink traffic for uplink traffic.
+   Example: Using downlink QoS settings to dynamically adjust uplink QoS settings for better traffic management.
+
+3. Packet Marking
+   Description: The SDAP layer marks packets with the appropriate QoS Flow Identifier (QFI) to indicate the QoS requirements.
+Example: Tagging packets with QFI 1 for high-priority traffic like voice calls.
+
+4. QoS Flow Identification
+   Description: The SDAP layer identifies the QoS flow for each packet using the QFI.
+   Example: Assigning a unique QFI to each application flow, such as streaming video or file downloads.
+
+Services Expected by the SDAP Layer from Lower Layers
+1. Reliable Data Transmission
+Description: The lower layers provide reliable data transmission over the radio interface, ensuring data integrity and delivery.
+Example: The PDCP layer handles retransmissions and error correction to ensure packets are delivered correctly.
+
+2. Support for QoS Requirements
+   Description: The lower layers support the QoS requirements specified by the SDAP layer, including prioritization and resource allocation.
+   Example: The MAC layer schedules resources based on the QoS requirements indicated by the SDAP layer.
+
+3. Error Detection and Correction
+   Description: The lower layers provide error detection and correction to maintain data integrity.
+   Example: The RLC layer performs error correction to handle packet loss and corruption.
+
+Main Functions of the SDAP Layer
+
+1. QoS Flow to DRB Mapping
+   Description: The SDAP layer maps QoS flows to appropriate DRBs based on the QoS requirements.
+   Functionality: Ensures that high-priority traffic is assigned to DRBs with sufficient resources.
+
+2. Packet Handling
+   Description: The SDAP layer handles packets by marking them with the appropriate QFI and ensuring they are transmitted according to their QoS requirements.
+   Functionality: Efficiently processes and forwards packets based on their QoS parameters.
+
+3. Reflective QoS Handling
+   Description: The SDAP layer manages reflective QoS, allowing the UE to adjust uplink QoS settings based on downlink observations.
+   Functionality: Enables dynamic QoS adjustments for better traffic management and resource utilization.
+
+4. QoS Flow Identification
+   Description: The SDAP layer identifies and classifies QoS flows using QFIs.
+   Functionality: Ensures each flow is correctly identified and managed according to its QoS requirements.
+Test Case 1: Establishing and Releasing an SDAP Entity
+Establishing an SDAP Entity
+
+```cpp
+#include <iostream>
+
+class SDAPEntity {
+public:
+    SDAPEntity(int sessionId) : sessionId(sessionId) {
+        std::cout << "SDAP Entity established for session " << sessionId << std::endl;
+    }
+
+    void release() {
+        std::cout << "SDAP Entity released for session " << sessionId << std::endl;
+    }
+
+private:
+    int sessionId;
+};
+
+int main() {
+    int sessionId = 101;
+    SDAPEntity sdapEntity(sessionId);
+    // Perform operations
+    sdapEntity.release();
+    return 0;
+}
+
+ Test Case 3: Data Transfer in Downlink
+
+```cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDU {
+    int qfi; // QoS Flow Identifier
+    std::vector<uint8_t> payload; // Actual data
+};
+
+void downlinkDataTransfer(const SDAPPDU& pdu) {
+    std::cout << "Downlink Data Transfer with QFI " << pdu.qfi << std::endl;
+    // Handle downlink data transfer
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDU pdu = {1, {0x01, 0x02, 0x03}};
+    downlinkDataTransfer(pdu);
+    return 0;
+}
+Test Case 4: Data Transfer in Uplink
+cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDU {
+    int qfi; // QoS Flow Identifier
+    std::vector<uint8_t> payload; // Actual data
+};
+
+void uplinkDataTransfer(const SDAPPDU& pdu) {
+    std::cout << "Uplink Data Transfer with QFI " << pdu.qfi << std::endl;
+    // Handle uplink data transfer
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDU pdu = {2, {0x01, 0x02, 0x03}};
+    uplinkDataTransfer(pdu);
+    return 0;
+}
+Mapping QoS Flow to DRB
+cpp
+#include <iostream>
+#include <map>
+
+// Example of mapping QoS flows to DRBs
+int mapQoSToDRB(int qfi) {
+    std::map<int, int> qosToDrbMap = {
+        {1, 1}, // QFI 1 -> DRB 1
+        {2, 2}, // QFI 2 -> DRB 2
+        {3, 3}  // QFI 3 -> DRB 3
+    };
+    return qosToDrbMap[qfi];
+}
+
+int main() {
+    int qfi = 1;
+    int drb = mapQoSToDRB(qfi);
+    std::cout << "QFI " << qfi << " is mapped to DRB " << drb << std::endl;
+    return 0;
+}
+```
+Summary
+The SDAP layer provides essential services to upper layers, such as QoS flow management, packet marking, and reflective QoS handling. It expects reliable data transmission, QoS support, and error correction from lower layers. The main functions of the SDAP layer include mapping QoS flows to DRBs, handling packets, and managing reflective QoS. The provided C++ code examples illustrate establishing and releasing SDAP entities, downlink and uplink data transfers, and mapping QoS flows to DRBs.
+
+
+                                         Assignment 3: 
+SDAP Procedures
+1. Establishing and Releasing an SDAP Entity
+Establishing an SDAP Entity:
+
+1. Initialization: When a new PDU session is established, the SDAP layer initializes an SDAP entity to handle QoS flows within that session.
+2. Configuration: The SDAP entity is configured with the necessary QoS parameters and mapping information for the session.
+3. Resource Allocation: Resources are allocated based on the QoS requirements of the flows managed by the SDAP entity.
+4. Activation: The SDAP entity is activated and ready to manage QoS flows and perform packet processing.
+
+Releasing an SDAP Entity:
+
+1. Deactivation: The SDAP entity is deactivated when the PDU session is terminated or when it is no longer needed.
+2. Resource Deallocation: Resources allocated to the SDAP entity are released.
+3. Cleanup: Any temporary state or configuration related to the SDAP entity is cleaned up to avoid resource leaks.
+
+2. Uplink and Downlink Data Transfer
+
+Downlink Data Transfer:
+
+1. Packet Reception: Data packets are received from the core network and passed to the SDAP layer.
+2. QoS Flow Identification: The SDAP layer identifies the QoS flow for each packet using the QoS Flow Identifier (QFI).
+3. DRB Mapping: The SDAP layer maps the QoS flow to the appropriate Data Radio Bearer (DRB) based on the QoS requirements.
+4. Packet Forwarding: Packets are forwarded to the corresponding DRB for transmission over the air interface.
+
+Uplink Data Transfer:
+
+1. Packet Reception: Data packets are received from the user equipment (UE) and passed to the SDAP layer.
+2. QoS Flow Identification: The SDAP layer identifies the QoS flow for each packet using the QFI.
+3. DRB Mapping: The SDAP layer maps the QoS flow to the appropriate DRB for uplink transmission.
+4. Packet Forwarding: Packets are forwarded to the next layer for further processing and transmission to the core network.
+3. Reflective QoS Flow to DRB Mapping
+1. Definition: Reflective QoS involves using QoS parameters observed in downlink traffic to adjust uplink QoS settings dynamically.
+2. Observation: The SDAP layer monitors the QoS parameters of downlink traffic.
+3. Adjustment: Based on observed parameters, the SDAP layer adjusts the QoS settings for uplink traffic to ensure consistent quality of service.
+4. Mapping: The SDAP layer maps the reflective QoS flows to appropriate DRBs for uplink traffic, similar to the mapping used for downlink traffic.
+
+Test Cases
+ Test Case 1: Establishing an SDAP Entity
+
+```cpp
+#include <iostream>
+
+class SDAPEntity {
+public:
+    SDAPEntity(int sessionId) : sessionId(sessionId) {
+        std::cout << "SDAP Entity established for session " << sessionId << std::endl;
+        // Initialization and configuration code here
+    }
+
+    void release() {
+        std::cout << "SDAP Entity released for session " << sessionId << std::endl;
+        // Cleanup code here
+    }
+
+private:
+    int sessionId;
+};
+
+int main() {
+    int sessionId = 101;
+    SDAPEntity sdapEntity(sessionId);
+    // Perform operations
+    sdapEntity.release();
+    return 0;
+}
+Releasing an SDAP Entity
+
+```cpp
+#include <iostream>
+
+class SDAPEntity {
+public:
+    SDAPEntity(int sessionId) : sessionId(sessionId) {
+        std::cout << "SDAP Entity established for session " << sessionId << std::endl;
+    }
+
+    void release() {
+        std::cout << "SDAP Entity released for session " << sessionId << std::endl;
+        // Cleanup code here
+    }
+
+private:
+    int sessionId;
+};
+
+int main() {
+    int sessionId = 101;
+    SDAPEntity sdapEntity(sessionId);
+    // Perform operations
+    sdapEntity.release();
+    return 0;
+}
+
+Test Case 3: Data Transfer in Downlink
+
+```cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDU {
+    int qfi; // QoS Flow Identifier
+    std::vector<uint8_t> payload; // Actual data
+};
+
+void downlinkDataTransfer(const SDAPPDU& pdu) {
+    std::cout << "Downlink Data Transfer with QFI " << pdu.qfi << std::endl;
+    // Handle downlink data transfer
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDU pdu = {1, {0x01, 0x02, 0x03}};
+    downlinkDataTransfer(pdu);
+    return 0;
+}
+```
+Test Case 4: Data Transfer in Uplink
+
+```cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDU {
+    int qfi; // QoS Flow Identifier
+    std::vector<uint8_t> payload; // Actual data
+};
+
+void uplinkDataTransfer(const SDAPPDU& pdu) {
+    std::cout << "Uplink Data Transfer with QFI " << pdu.qfi << std::endl;
+    // Handle uplink data transfer
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDU pdu = {2, {0x01, 0x02, 0x03}};
+    uplinkDataTransfer(pdu);
+    return 0;
+}
+```
+ Mapping QoS Flow to DRB
+
+```cpp
+#include <iostream>
+#include <map>
+
+// Example of mapping QoS flows to DRBs
+int mapQoSToDRB(int qfi) {
+    std::map<int, int> qosToDrbMap = {
+        {1, 1}, // QFI 1 -> DRB 1
+        {2, 2}, // QFI 2 -> DRB 2
+        {3, 3}  // QFI 3 -> DRB 3
+    };
+    return qosToDrbMap[qfi];
+}
+
+int main() {
+    int qfi = 1;
+    int drb = mapQoSToDRB(qfi);
+    std::cout << "QFI " << qfi << " is mapped to DRB " << drb << std::endl;
+    return 0;
+}
+Summary
+The SDAP layer's procedures include establishing and releasing SDAP entities, handling uplink and downlink data transfers, and managing reflective QoS flow to DRB mapping. The provided C++ code examples illustrate these procedures, ensuring proper functionality and understanding of the SDAP layer in a 5G network.
+
+                                                                    Assignment 4: 
+SDAP Protocol Data Units (PDUs)
+
+1. Difference Between Data PDUs and Control PDUs
+1.Data PDUs:
+Purpose: Data PDUs carry actual user data between the user equipment (UE) and the network.
+Structure: Data PDUs contain the SDAP header (if applicable) followed by the payload which includes the user data.
+Usage: Used for transporting application data based on the QoS requirements mapped by the SDAP layer.
+
+2.Control PDUs:
+Purpose: Control PDUs are used for signaling and control purposes, such as managing SDAP entities and QoS flows.
+Structure: Control PDUs contain control information and may include SDAP-specific control messages.
+Usage: Used for establishing, modifying, or releasing SDAP entities and managing QoS flows.
+
+2. Format of a Data PDU
+
+With SDAP Header:
+SDAP Header: Contains fields like the QoS Flow Identifier (QFI) and possibly other control information.
+Payload: The actual user data to be transmitted.
+Structure:
+SDAP Header: [QFI | Additional Fields]
+  Payload: [User Data]
+
+Without SDAP Header:
+Payload Only: Data PDUs without an SDAP header are simply the user data.
+Structure:
+  Payload: [User Data]
+Example :
+cpp
+// Data PDU with SDAP Header
+struct SDAPHeader {
+    int qfi; // QoS Flow Identifier
+    // Other possible fields
+};
+
+struct SDAPPDUWithHeader {
+    SDAPHeader header;
+    std::vector<uint8_t> payload; // User Data
+};
+
+// Data PDU without SDAP Header
+struct SDAPPDUWithoutHeader {
+    std::vector<uint8_t> payload; // User Data
+};
+```
+3. Use of End-Marker Control PDU in SDAP
+
+End-Marker Control PDU:
+Purpose: The End-Marker Control PDU is used to signal the end of a data transfer session or to indicate that all data for a particular QoS flow has been sent.
+Usage: Helps in managing and closing data transfer sessions gracefully, ensuring that no additional data is expected.
+Structure: Contains a minimal control payload indicating the end of a data sequence.
+
+Example Format:
+cpp
+// End-Marker Control PDU
+struct EndMarkerControlPDU {
+    int qfi; // QoS Flow Identifier
+    // Control Information
+};
+
+// Function to handle End-Marker Control PDU
+void handleEndMarkerControlPDU(const EndMarkerControlPDU& pdu) {
+    std::cout << "End-Marker Control PDU received for QFI " << pdu.qfi << std::endl;
+    // Handle end of data transfer
+}
+Test Cases
+Test Case 1: Establishing and Releasing an SDAP Entity
+
+cpp
+// End-Marker Control PDU
+struct EndMarkerControlPDU {
+    int qfi; // QoS Flow Identifier
+    // Control Information
+};
+
+// Function to handle End-Marker Control PDU
+void handleEndMarkerControlPDU(const EndMarkerControlPDU& pdu) {
+    std::cout << "End-Marker Control PDU received for QFI " << pdu.qfi << std::endl;
+    // Handle end of data transfer
+
+Test Case 3: Data Transfer in Downlink
+```cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDUWithHeader {
+    int qfi; // QoS Flow Identifier
+    std::vector<uint8_t> payload; // User Data
+};
+
+void downlinkDataTransfer(const SDAPPDUWithHeader& pdu) {
+    std::cout << "Downlink Data Transfer with QFI " << pdu.qfi << std::endl;
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDUWithHeader pdu = {1, {0x01, 0x02, 0x03}};
+    downlinkDataTransfer(pdu);
+    return 0;
+}
+Test Case 4: Data Transfer in Uplink
+```cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDUWithoutHeader {
+    std::vector<uint8_t> payload; // User Data
+};
+
+void uplinkDataTransfer(const SDAPPDUWithoutHeader& pdu) {
+    std::cout << "Uplink Data Transfer" << std::endl;
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDUWithoutHeader pdu = {{0x01, 0x02, 0x03}};
+    uplinkDataTransfer(pdu);
+    return 0;
+}
+```
+Mapping QoS Flow to DRB
+
+int mapQoSToDRB(int qfi) {
+    std::map<int, int> qosToDrbMap = {
+        {1, 1}, // QFI 1 -> DRB 1
+        {2, 2}, // QFI 2 -> DRB 2
+        {3, 3}  // QFI 3 -> DRB 3
+    };
+    return qosToDrbMap[qfi];
+}
+
+int main() {
+    int qfi = 1;
+    int drb = mapQoSToDRB(qfi);
+    std::cout << "QFI " << qfi << " is mapped to DRB " << drb << std::endl;
+    return 0;
+}
+Summary
+SDAP PDUs include Data PDUs and Control PDUs, each serving different purposes. Data PDUs carry user data, whereas Control PDUs manage control and signaling functions. The format of Data PDUs varies based on whether they include an SDAP header. The End-Marker Control PDU is used to signal the end of a data transfer session. The provided C++ code examples illustrate the handling of these PDUs in the context of data transfer and control signaling.
+
+                                                                          Assignment 5: 
+SDAP Parameters and QoS Management
+Key SDAP Parameters
+
+1. QoS Flow Identifier (QFI)
+Purpose: The QFI is used to uniquely identify a QoS flow within a PDU session. It helps in differentiating between various data flows that may have different QoS requirements.
+   Usage: SDAP uses the QFI to map user data to the appropriate QoS flow and ensure that each flow is handled according to its QoS parameters.
+
+2. Direction/Connection (D/C)
+Purpose: The D/C parameter indicates the direction of the data flow (uplink or downlink) or the connection type. This is important for managing data flows and ensuring that packets are routed correctly.
+Usage: SDAP uses the D/C parameter to handle the direction of the data and apply appropriate QoS policies based on whether the data is being transmitted to or from the user equipment.
+
+3.Radio Quality Indicator (RQI)
+   Purpose: The RQI represents the quality of the radio connection for a particular QoS flow. It helps in adjusting the QoS parameters based on the current radio conditions.
+Usage: SDAP uses the RQI to dynamically adjust the QoS parameters and ensure that the QoS flow is maintained even in varying radio conditions.
+
+4. Radio Data Identifier (RDI)
+Purpose: The RDI is used to identify data related to specific radio resources. It is critical for mapping QoS flows to specific DRBs.
+   Usage: SDAP uses the RDI to map QoS flows to Data Radio Bearers (DRBs) that are associated with specific radio resources.
+
+Usage of Parameters in QoS Flow to DRB Mapping
+
+QFI: Used to map QoS flows to DRBs. The QFI determines the DRB that will carry the data for a specific QoS flow. For example, high-priority QoS flows may be mapped to DRBs with guaranteed bandwidth.
+
+D/C: Helps in determining whether the QoS flow mapping is for uplink or downlink data, ensuring that data is correctly routed and processed based on its direction.
+
+RQI: Allows the SDAP layer to adjust the QoS flow mapping dynamically based on radio quality. If the radio quality deteriorates, the SDAP layer can map the QoS flow to a different DRB that offers better performance.
+
+RDI: Used to ensure that QoS flows are mapped to DRBs that correspond to specific radio resources. This helps in managing radio resources efficiently and ensuring optimal performance.
+
+Importance of QoS Flow Management in 5G NR
+
+Traffic Differentiation: QoS flow management allows for differentiation between various types of traffic, such as voice, video, and data. This ensures that each type of traffic receives appropriate treatment based on its requirements.
+
+Resource Optimization: Efficient QoS flow management ensures that network resources are used optimally. It helps in allocating resources based on the QoS requirements of different flows, avoiding congestion and improving overall network performance.
+
+Enhanced User Experience: By managing QoS flows effectively, the network can provide a consistent and high-quality experience for users, even under varying network conditions. This is crucial for applications with stringent QoS requirements, such as real-time video streaming and online gaming.
+
+Dynamic Adaptation: QoS flow management allows for dynamic adaptation to changing network conditions. For example, if the radio quality deteriorates, QoS parameters can be adjusted to maintain the required quality of service.
+Test Cases
+Test Case 1: Establishing and Releasing an SDAP Entity
+#include <iostream>
+
+class SDAPEntity {
+public:
+    SDAPEntity(int sessionId) : sessionId(sessionId) {
+        std::cout << "SDAP Entity established for session " << sessionId << std::endl;
+        // Initialization and configuration code here
+    }
+
+    void release() {
+        std::cout << "SDAP Entity released for session " << sessionId << std::endl;
+        // Cleanup code here
+    }
+
+private:
+    int sessionId;
+};
+
+int main() {
+    int sessionId = 101;
+    SDAPEntity sdapEntity(sessionId);
+    // Perform operations
+    sdapEntity.release();
+    return 0;
+}
+
+Test Case 3: Data Transfer in Downlink
+`cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDUWithHeader {
+    int qfi; // QoS Flow Identifier
+    std::vector<uint8_t> payload; // User Data
+};
+
+void downlinkDataTransfer(const SDAPPDUWithHeader& pdu) {
+    std::cout << "Downlink Data Transfer with QFI " << pdu.qfi << std::endl;
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDUWithHeader pdu = {1, {0x01, 0x02, 0x03}};
+    downlinkDataTransfer(pdu);
+    return 0;
+}
+Test Case 4: Data Transfer in Uplink
+Example Code:
+```cpp
+#include <iostream>
+#include <vector>
+
+struct SDAPPDUWithoutHeader {
+    std::vector<uint8_t> payload; // User Data
+};
+
+void uplinkDataTransfer(const SDAPPDUWithoutHeader& pdu) {
+    std::cout << "Uplink Data Transfer" << std::endl;
+    std::cout << "Payload size: " << pdu.payload.size() << " bytes" << std::endl;
+}
+
+int main() {
+    SDAPPDUWithoutHeader pdu = {{0x01, 0x02, 0x03}};
+    uplinkDataTransfer(pdu);
+    return 0;
+}
+Mapping QoS Flow to DRB
+
+#include <iostream>
+#include <map>
+
+// Example of mapping QoS flows to DRBs
+int mapQoSToDRB(int qfi) {
+    std::map<int, int> qosToDrbMap = {
+        {1, 1}, // QFI 1 -> DRB 1
+        {2, 2}, // QFI 2 -> DRB 2
+        {3, 3}  // QFI 3 -> DRB 3
+    };
+    return qosToDrbMap[qfi];
+}
+
+int main() {
+    int qfi = 1;
+    int drb = mapQoSToDRB(qfi);
+    std::cout << "QFI " << qfi << " is mapped to DRB " << drb << std::endl;
+    return 0;
+}
+Summary
+Key SDAP parameters such as QFI, D/C, RQI, and RDI play crucial roles in QoS management by helping in identifying, mapping, and adjusting QoS flows. Efficient QoS flow management in 5G NR ensures traffic differentiation, resource optimization, enhanced user experience, and dynamic adaptation to network conditions. The provided test cases and code examples demonstrate the establishment and release of SDAP entities, data transfer procedures, and mapping of QoS flows to DRBs.
