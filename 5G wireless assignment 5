@@ -1,0 +1,168 @@
+Overall downlink physical layer processing 
+ 
+
+Certainly! Let's break down the overall downlink physical layer processing steps as depicted in the diagram. The process is divided into several main parts: DL-SCH, gNB MAC, and SS Block Configuration.
+
+### DL-SCH (Downlink Shared Channel)
+
+1. **CRC Calculation + Attachment**: 
+   - **CRC** (Cyclic Redundancy Check) bits are calculated and appended to the data for error detection purposes.
+
+2. **LDPC Graph Selection Code Block Segmentation**:
+   - **LDPC** (Low-Density Parity-Check) codes are selected.
+   - The transport block is segmented into smaller code blocks if it is larger than the maximum code block size.
+
+3. **Channel Coding (LDPC Encoding) Rate Matching + HARQ**:
+   - Each code block is encoded using LDPC.
+   - Rate matching adjusts the coded bits to fit the allocated resources.
+   - **HARQ** (Hybrid Automatic Repeat reQuest) handles error correction by retransmitting erroneous blocks.
+
+4. **Interleaving + Scrambling + Modulation**:
+   - Interleaving rearranges the bits to protect against burst errors.
+   - Scrambling applies a pseudo-random sequence to the bits for improved transmission properties.
+   - Modulation maps the scrambled bits to modulation symbols (e.g., QPSK, 16-QAM).
+
+5. **Layer Mapping**:
+   - Modulated symbols are mapped to one or more transmission layers for MIMO (Multiple Input Multiple Output) transmission.
+
+6. **Antenna Port Mapping**:
+   - Mapped layers are associated with specific antenna ports.
+
+7. **Precoding**:
+   - Precoding transforms the layer data to match the spatial characteristics of the transmission channel.
+
+8. **Virtual/Physical Resource Element Mapping**:
+   - Symbols are mapped to resource elements in the time-frequency grid.
+
+9. **OFDM Modulation + CP Insertion**:
+   - OFDM (Orthogonal Frequency-Division Multiplexing) modulation is performed.
+   - A Cyclic Prefix (CP) is added to each OFDM symbol to combat inter-symbol interference.
+
+10. **DAC TX Beamforming**:
+    - Digital-to-Analog Conversion (DAC) converts the digital signal to analog.
+    - Beamforming directs the signal towards the intended user.
+
+11. **IQ Modulation/RF Up-conversion/PA and TX Filter**:
+    - IQ modulation converts the baseband signal to RF (Radio Frequency).
+    - The signal is upconverted to the carrier frequency.
+    - Power Amplification (PA) and filtering are applied before transmission.
+
+### gNB MAC (Medium Access Control)
+
+1. **DCI (Downlink Control Information)**:
+   - Control information is multiplexed with the data.
+   - Includes scheduling and resource allocation information.
+
+2. **Information Element Multiplexing**:
+   - Multiple information elements are combined into a single transmission block.
+
+3. **CRC Calculation + Attachment**:
+   - CRC bits are added to the control information.
+
+4. **Channel Coding (Polar Encoding) Rate Matching**:
+   - Polar coding is applied to the control information.
+   - Rate matching is performed.
+
+5. **CCE-to-REG Mapping Scrambling**:
+   - Control Channel Elements (CCEs) are mapped to Resource Element Groups (REGs).
+   - Scrambling is applied.
+
+6. **QPSK Modulation**:
+   - Control information is modulated using QPSK (Quadrature Phase Shift Keying).
+
+### SS Block Configuration (Synchronization Signal Block)
+
+1. **Payload Generation + Scrambling**:
+   - Synchronization signal payload is generated and scrambled.
+
+2. **CRC Calculation + Attachment**:
+   - CRC bits are appended to the synchronization signal.
+
+3. **Channel Coding (Polar Encoding) Rate Matching**:
+   - Polar coding is applied.
+   - Rate matching adjusts the encoded bits.
+
+4. **Scrambling**:
+   - Additional scrambling is applied.
+
+5. **QPSK Modulation**:
+   - Modulation using QPSK.
+
+6. **SS Block Generation**:
+   - Synchronization signal block is generated, including both PSS (Primary Synchronization Signal) and SSS (Secondary Synchronization Signal).
+
+### Reference Signal Generation
+
+- **DM-RS/CSI-RS/PT-RS/TRS**:
+  - **DM-RS** (Demodulation Reference Signal) for channel estimation.
+  - **CSI-RS** (Channel State Information Reference Signal) for measuring channel quality.
+  - **PT-RS** (Phase Tracking Reference Signal) for phase noise compensation.
+  - **TRS** (Tracking Reference Signal) for time and frequency tracking.
+
+### MAC Scheduler
+
+- **CSI Reports Estimation**:
+  - Channel State Information (CSI) is reported to the scheduler for resource allocation and link adaptation.
+- **HARQ ACK/NACK**:
+  - ACK/NACK signals for HARQ are handled to indicate successful or failed reception of data blocks.
+
+
+NR channels : 
+In 5G NR (New Radio), the physical layer channels are essential for transmitting various types of information between the base station (gNB) and the user equipment (UE). These channels can be broadly categorized into physical downlink channels, physical uplink channels, and physical signals. Below is a detailed overview of the primary NR channels and their functions.
+Physical Downlink Channels
+1.	PDSCH (Physical Downlink Shared Channel)
+o	Carries user data and higher layer signaling.
+o	Supports dynamic scheduling and HARQ (Hybrid Automatic Repeat reQuest) for retransmissions.
+o	Can use various modulation and coding schemes (QPSK, 16-QAM, 64-QAM, 256-QAM).
+2.	PDCCH (Physical Downlink Control Channel)
+o	Carries control information necessary for decoding the PDSCH.
+o	Informs the UE about resource allocation, HARQ processes, and modulation and coding schemes.
+o	Supports multiple formats for different types of scheduling and control information.
+3.	PBCH (Physical Broadcast Channel)
+o	Carries the Master Information Block (MIB), which contains essential system information for initial access.
+o	Uses a fixed format and modulation scheme (QPSK) to ensure robustness.
+4.	PCFICH (Physical Control Format Indicator Channel)
+o	Indicates the number of OFDM symbols used for control channels in each subframe (not present in 5G NR as it was in LTE, functionality incorporated in other channels).
+5.	PHICH (Physical Hybrid-ARQ Indicator Channel)
+o	Carries HARQ acknowledgments (ACK/NACK) for uplink transmissions (not present in 5G NR as it was in LTE, HARQ feedback incorporated in PDCCH).
+Physical Uplink Channels
+1.	PUSCH (Physical Uplink Shared Channel)
+o	Carries user data and higher layer signaling from the UE to the gNB.
+o	Supports various modulation and coding schemes.
+o	Can include DM-RS (Demodulation Reference Signal) for channel estimation.
+2.	PUCCH (Physical Uplink Control Channel)
+o	Carries control information such as scheduling requests, HARQ feedback, and CSI (Channel State Information).
+o	Supports multiple formats for different types of control information.
+3.	PRACH (Physical Random Access Channel)
+o	Used for initial access and random access procedures.
+o	Supports different preamble formats for various scenarios, including initial access, handover, and recovery from radio link failure.
+Physical Signals
+1.	PSS (Primary Synchronization Signal)
+o	Helps the UE synchronize with the gNB in the frequency domain.
+o	One of the first signals a UE searches for when trying to connect to a network.
+2.	SSS (Secondary Synchronization Signal)
+o	Helps the UE acquire timing synchronization and cell identity after detecting the PSS.
+3.	PBCH (Physical Broadcast Channel) (also mentioned above)
+o	Part of the SS block, provides critical system information.
+4.	DM-RS (Demodulation Reference Signal)
+o	Used by the UE to estimate the downlink channel for coherent demodulation of PDSCH and PUSCH.
+5.	CSI-RS (Channel State Information Reference Signal)
+o	Used for channel state information measurements to support link adaptation and beamforming.
+6.	PT-RS (Phase Tracking Reference Signal)
+o	Used to track and compensate for phase noise in the downlink.
+7.	TRS (Tracking Reference Signal)
+o	Used for time and frequency tracking, improving overall synchronization.
+Channel Mapping and Functionality
+•	DL-SCH (Downlink Shared Channel):
+o	Mapped to PDSCH.
+o	Carries user data, RRC signaling, and paging messages.
+•	UL-SCH (Uplink Shared Channel):
+o	Mapped to PUSCH.
+o	Carries user data and signaling from UE to gNB.
+•	BCH (Broadcast Channel):
+o	Mapped to PBCH.
+o	Carries the MIB, providing system information necessary for initial access.
+•	RACH (Random Access Channel):
+o	Mapped to PRACH.
+o	Facilitates initial access and random access procedures.
+
