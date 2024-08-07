@@ -1,0 +1,318 @@
+PBCH, PDCCH, PCDCCH DCI Mapping, search space, 
+
+1.	PBCH (Physical Broadcast Channel):
+o	Purpose: Used for broadcasting system information (like MIB - Master Information Block) from the base station (gNB) to all UEs within a cell.
+o	Usage: It provides critical system parameters that the UE needs to access the network and communicate with the base station.
+2.	PDCCH (Physical Downlink Control Channel):
+o	Purpose: Used for transmitting downlink control information (DCI) from the base station to the UE.
+o	Usage: It includes scheduling decisions for both uplink and downlink data channels, as well as other control information. It tells the UE where to find its data in the downlink or where and how to transmit in the uplink.
+3.	DCI (Downlink Control Information) Mapping:
+o	Purpose: The DCI carries the control information necessary for the UE to decode the PDSCH (Physical Downlink Shared Channel) or to know how to transmit on the PUSCH (Physical Uplink Shared Channel).
+o	Usage: The DCI is mapped onto the PDCCH. The format of DCI varies based on what control information needs to be conveyed (e.g., scheduling information, power control commands).
+4.	Search Space:
+o	Purpose: A set of PDCCH candidates that the UE needs to monitor to find its control information.
+o	Usage: Search spaces are defined in terms of aggregation levels and can be common or UE-specific. A common search space is monitored by all UEs in the cell, whereas a UE-specific search space is unique to a particular UE.
+Here’s how these components interact in a 5G NR network:
+•	PBCH: Broadcasts essential system information from the gNB to all UEs.
+•	PDCCH: Carries DCI, which informs UEs about resource allocations and scheduling for PDSCH and PUSCH.
+•	DCI Mapping: The DCI is mapped onto the PDCCH, which the UE decodes to understand how to proceed with its communication.
+•	Search Space: The UE monitors the search space to find the PDCCH carrying its relevant DCI.
+An example of how this might look in a simple flow:
+1.	PBCH Transmission: The gNB broadcasts system information using the PBCH.
+2.	PDCCH Monitoring: The UE monitors its search space for PDCCH candidates.
+3.	DCI Reception: The UE finds the PDCCH that contains its DCI.
+4.	PDSCH/PUSCH Scheduling: Based on the DCI, the UE knows how to decode the PDSCH (for downlink data) or when/how to transmit on the PUSCH (for uplink data).
+
+
+PDCCH flow and pbch flow mapping diagram with code for each and every column.
+
+PDCCH (Physical Downlink Control Channel).
+PDCCH Transport Process
+Following diagram illustrates the PDCCH Transport Process in a cellular communication system, detailing the sequence of steps involved in preparing and transmitting the PDCCH from gNB to UE
+ 
+Information Element Multiplexing: This stage involves combining different control information elements such as Downlink Control Information (DCI) formats into a single data stream for processing.
+CRC Attachment: A Cyclic Redundancy Check is added to the multiplexed information to enable error detection at the receiver's end.
+Channel Coding: The data stream with CRC is encoded to protect against potential data corruption during transmission. This typically involves error correction coding techniques like Polar code.
+Rate Matching: The encoded data is adjusted to match the allocated resource blocks. This step may involve puncturing or repeating bits to fit the data into the available transmission space.
+Scrambling: The rate-matched data is scrambled to minimize interference and ensure data security. Scrambling is performed using a sequence known to both the transmitter and receiver.
+Modulation: The scrambled data is then modulated, which means converting the bits into symbols that can be transmitted over a radio frequency channel.
+Resource Element Mapping: Finally, the modulated symbols are mapped onto specific resource elements in the frequency-time grid of the carrier signal. This step positions the control information correctly for transmission within the broader signal frame.
+(1) Information Element Multiplexing
+This is a process of generating a bit string of DCI carrying various control and scheduling information. Refer to DCI page to see the details of the contents.
+If the size of DCI is less than 12 bit, it will be zero padded until it become 12 bits (Ref [1]).  
+ 
+(2) CRC Attachment
+ 
+< CRC Attach >
+Following diagram illustrates the CRC Attachment process for the 5G PDCCH (Physical Downlink Control Channel). As you see here, 24 bits CRC is appeded to DCI data.
+ 
+ 
+Initially, DCI (Downlink Control Information) data is presented as a sequence of bits a0, a1, a2, ..., aA-1. A 24-bit CRC is appended to this DCI data.
+To prepare for CRC attachment, a sequence is extended by setting all bits following the DCI data to '1' for a length L of 24, resulting in an extended sequence a'0, a'1, a'2, ..., a'L-1, a'L, ..., a'A+L-1. This sequence is processed using a generator polynomial GCRC24(D), producing a CRC of bits p0, p1, p2, ..., pL-1.
+The DCI data and CRC are then concatenated, forming a complete sequence a0, a1, a2, ..., aA-1 | p0, p1, p2, ..., pL-1, which is denoted by b0, b1, b2, ..., bB-1. The total length of the sequence after CRC attachment is B = A + L.
+This CRC attachment process is a crucial step in ensuring the integrity of the control information as it allows the receiver to detect any errors that may have occurred during the transmission.
+ 
+< Masking with RNTI >
+After CRC Attach, the last 16 bit is masked with a specific RNTI. Using this RNTI, UE figures out which UE the DCI is for and what is the usage of the DCI.
+ 
+ 
+After the CRC is appended to the DCI data, resulting in the sequence b0, b1, b2, ..., bA-1, bA, ..., b23, the last 16 bits are masked with a specific RNTI (Radio Network Temporary Identifier).
+This masking is performed by XORing the last 16 bits of the sequence with the 16-bit RNTI, denoted as xRNTI. The RNTI is a unique identifier that enables the User Equipment (UE) to determine which DCI is intended for it and understand the usage of the DCI.
+The output of this process is a new sequence c0, c1, c2, ..., cA-1, cA,...,cA+7,cA+B, ..., c23, where the last 16 bits have been modified by the RNTI masking. This step is crucial for directing the DCI to the correct UE and for protecting the information's integrity.
+ 
+< Interleaving >
+After RNTI masking, the data is interleaved so that CRC bits are distributed among information bits. This interleaver supports a max input size of 164 bits meaning that DCI without CRC can be max 140 bits.(Ref [1])
+ 
+(3) Channel Coding
+The image shows the Channel Coding step, which is part of the PDCCH channel coding processing.
+ 
+In this step, the sequence c0, c1, c2, ..., cK-1 undergoes Polar Coding, a method known for its efficiency in error correction capabilities.
+The Polar Coding process is characterized by several parameters: nmax represents the maximum number of reliable sequence indices and is set to 9; IIL denotes the list size used in decoding, given as 1; npc is the number of parity check bits, which is 0 in this case; and npcwm is another parity check parameter, also set to 0 here.
+After Polar Coding, the data sequence is transformed into d0, d1, d2, ..., dN-1, which is ready for subsequent transmission steps. This coded sequence is more resistant to errors during transmission over the communication channel.
+(4) Rate Matching
+This diagram illustrates the Rate Matching step in PDCCH channel processing, which is essential for adapting the coded data to the correct size for transmission.
+ 
+Starting with the coded data sequence d0, d1, d2, ..., dN-1, the process involves sub-block interleaving and bit selection. Interleaving of coded bits is indicated, but with IBIL set to 0, this implies that there is no interleaving applied to the data.
+Following this, the data sequence is adjusted to match the transmission rate, resulting in a new sequence f0, f1, f2, ..., fE-1. This rate matching process ensures that the data fits into the allocated transmission resources and is correctly received and decoded by the User Equipment.
+(5) Scrambling
+The image illustrates the scrambling process, which  is essential for ensuring data integrity and security.
+ 
+The scrambling process uses an initialization sequence cinit that is derived from the RNTI (Radio Network Temporary Identifier) and an identifier nID.
+For UE specific search spaces, nID is set to a value defined by the PDCCH-DMRS-Scrambling-ID if configured in ControlResourceSet in the RRC (Radio Resource Control) layer, which can range from 0 to 1023. Otherwise, nID equals NIDcell, the physical cell ID.
+The initialization sequence is calculated as cinit = (RNTI * 216 + nID) mod 231. Two sequences x1(n) and x2(n) are generated and used to produce the scrambling sequence c(n) through a defined polynomial relationship.
+Finally, the data bits b(i) are scrambled with c(n) to produce the scrambled bits b~(i) = (b(i) + c(i)) mod 2. This scrambled sequence is more resistant to interference and unauthorized interception, enhancing the overall security and reliability of the communication.
+(6) Modulation
+Following figure depicts the modulation process for PDCCH.
+ 
+The process starts with a binary sequence represented as b~(0), b~(1), ..., b~(Mbit - 1). This sequence undergoes Quadrature Phase Shift Keying (QPSK) modulation, which is a method that maps every two bits of the binary sequence to one symbol, represented as a complex number. Thus, two binary bits are converted into a single QPSK symbol.
+After modulation, the sequence of binary bits is transformed into a sequence of complex numbers, d(0), d(1), ..., d(Msymb - 1), where each symbol in this new sequence corresponds to a pair of binary bits from the original sequence. The result of this modulation is a complex number sequence suitable for transmission over the radio frequency spectrum.
+(7) Resource Element Mapping
+This is putting the ecoded and modulated PDCCH bits into each resource elements in NR resource grid.
+The gNB should assume a block of complex-valued symbols d(0), ..., d(Msymb - 1) is to be scaled by a factor βPDCCH and then mapped to resource elements (k, l)p, u that are designated for the monitored PDCCH and not used for the associated PDCCH DMRS. The mapping order should follow an increasing sequence of first k, then l. The specified antenna port for this operation is p = 2000.
+The process can be described in step by step as follows:
+•	The gNB prepares a block of complex-valued symbols represented as d(0), d(1), ..., d(Msymb - 1).
+•	Each symbol in the block is scaled by a predefined factor, βPDCCH.
+•	The scaled symbols are mapped onto resource elements, denoted as (k, l)p,u, where k is the subcarrier index and l is the OFDM symbol index within a slot.
+•	This mapping follows an ascending order, first by subcarrier index k, then by OFDM symbol index l.
+•	It is ensured that the resource elements used for PDCCH do not overlap with those allocated for the associated PDCCH DMRS.
+•	The antenna port used for this operation is specified as p = 2000.
+Through these steps, the gNB systematically assigns the PDCCH symbols to the appropriate resources on the frequency-time grid for effective transmission.
+
+
+PBCH (Physical Broadcast Channel)
+The PBCH Transport Process encompasses a series of steps to prepare and transmit the Physical Broadcast Channel (PBCH) information. The PBCH is a key component in cellular communication networks, particularly in LTE and 5G systems. It serves as the primary channel through which a base station (eNodeB in LTE, gNodeB in 5G) transmits MIB to UEs.
+
+PBCH Transport Process
+Following diagram illustrates the PBCH Transport Process in a cellular communication system, detailing the sequence of steps involved in preparing and transmitting the PBCH from gNB to UE
+ 
+Followings are short descriptions of each of the steps illustrated above. I would not explain much in words for this process and I don't think I can make you understand the details of this process just by words. The purpose of following description (illustrations) is to give you high level picture of the algorithm and let you know of what kind of lower layer, higher layer parameters are involved in each of the step.
+PBCH Payload Generation: The broadcast channel (BCH) data is generated. This is the first step where the data that needs to be broadcasted is prepared.
+Scrambling: The generated payload is scrambled. This step is crucial for mitigating interference and maintaining the integrity of the signal.
+CRC Attachment: A Cyclic Redundancy Check (CRC) is attached to the scrambled data for error detection purposes.
+Channel Coding: The data with the CRC is encoded to protect against potential errors during transmission.
+Rate Matching: The encoded data is then processed through rate matching to ensure that it fits the available transmission resources.
+Scrambling: The rate-matched data undergoes a second scrambling process. This could be for additional security or interference mitigation.
+Modulation: The scrambled data is then modulated, which means it is converted into a waveform suitable for transmission over the radio frequency spectrum.
+Resource Element Mapping: Finally, the modulated data is mapped onto the resource elements in the frequency-time grid for actual transmission.
+(1) PBCH Payload Generation
+The following illustration outlines the PBCH Payload Generation process, a crucial initial step in the PBCH Transport Process within cellular networks like 5G NR. This process is instrumental in creating the payload that will be transmitted over the Physical Broadcast Channel.
+ 
+The BCH data sequence begins with bits labeled from ã0 to ã(A-1). This sequence is then augmented with additional bits that encode specific system information:
+•	The bits ã(A-1), ã(A+1), ã(A+2), and ã(A+3) correspond to the 4th, 3rd, 2nd, and 1st LSBs of the System Frame Number (SFN).
+•	The bit ã(A+4) denotes a half radio frame bit.
+•	When LSSB equals 64, the bits ã(A+5), ã(A+6), and ã(A+7) are the 6th, 5th, and 4th bits of the SS/PBCH block index, respectively.
+•	If LSSB is not equal to 64, then ã(A+5) is the MSB of kSSB, with ã(A+6) and ã(A+7) being reserved.
+After these bits are inserted, an interleaving process is applied, reordering the sequence into a0 to a(A-1), which completes the payload generation phase ready for subsequent transmission steps.
+(2) Scrambling
+The image details the scrambling process for cellular communication data, which is a critical step in the PBCH Transport Process. The process begins with the generation of an initialization sequence cinit that is dependent on the cell ID NcellID and the System Frame Number (SFN). The sequence is specifically generated at the start of each SFN where mod(SFN, 8) equals 0.
+ 
+The scrambling sequence c(n) is formulated using two sequences x1(n) and x2(n). These sequences are recursively updated using the relationships:
+•	x1(n+31) = (x1(n+3) + x1(n)) mod 2
+•	x2(n+31) = (x2(n+3) + x2(n+2) + x2(n+1) + x2(n)) mod 2
+The data bit ai is scrambled with the bit si from the scrambling sequence c(n), resulting in the scrambled bit a'i = (ai + si) mod 2.
+The value of si is derived from the pseudo-random sequence generated by c(j + vM), where M is defined as A - 3 for L = 4 or L = 8, and A - 6 for L = 64.
+The accompanying table maps the third and second LSB of the SFN to the value of v, which influences the pseudo-random sequence generation:
+•	For (0,0) and (1,1), v is 0.
+•	For (0,1) and (1,0), v is 1.
+•	For (1,0) and (0,1), v is 2.
+•	For (1,1) and (0,0), v is 3.
+This scrambling ensures the transmitted signal's clarity, distinguishing it from noise and other signals for precise reception and decoding.
+(3) CRC Attachment
+Following illustrates the CRC Attachment process, which is the third step in the PBCH Transport Process.
+ 
+A sequence of scrambled bits is represented as a'0, a'1, a'2, ..., a'A-1. A CRC polynomial, represented as GCRC24(D), is applied to this data sequence, producing a set of CRC bits p0, p1, p2, ..., pL-1, with L being the length of the CRC which is 24 bits.
+These CRC bits are then appended to the original data sequence, resulting in an concatenated data string a'0, a'1, a'2, ..., a'A-1 | p0, p1, p2, ..., pL-1. This appended sequence serves as a checksum for error detection at the receiver's end. The combined sequence, now including the CRC, is denoted as b0, b1, b2, ..., bB-1.
+The CRC attachment is essential for maintaining data integrity during transmission and is a common practice in digital communication systems for error detection and correction.
+(4) Channel Coding
+Following diagram presents the Channel Coding step, which is the fourth stage in the PBCH Transport Process.
+ 
+It begins with a sequence of bits, represented as c0, c1, c2, ..., cK-1, which are then fed into a Polar Coding scheme.
+Polar Coding transforms the original bits into a new set of coded bits that have properties making them more robust against errors over a noisy communication channel. Parameters such as nmax = 9, IL = 1,npc = 0 and nwmpc = 0 are related to the specific configuration of the Polar Coding process.
+The output from the Polar Coding block is a new sequence of coded bits d0, d1, d2, ..., dN-1, which are ready for the subsequent steps in the transmission process. This encoded sequence is designed to be more resilient to the effects of noise and interference when transmitted over the air interface.
+(6) Scrambling
+The image illustrates the scrambling process which is step six in the PBCH Transport Process, essential for data preparation in cellular networks
+ 
+NOTE : Lmax is the maximum number of SS/PBCH blocks in an SS/PBCH period.  This value is determined by subcarrier spacing and frequency range. See this table to see the specific Lmax value for each cases.
+ 
+It begins with the initialization of the sequence cinit based on the cell's NIDcell at the start of each SS/PBCH block.
+Two sequences, x1(n) and x2(n), are used to generate the scrambling sequence c(n). These sequences are updated for each n using a linear feedback shift register, with updates performed as follows:
+•	x1(n+31) = (x1(n+3) + x1(n)) mod 2
+•	x2(n+31) = (x2(n+3) + x2(n+2) + x2(n+1) + x2(n)) mod 2
+The data bits b̃(i) are scrambled by XORing with the bits from the sequence c(i + vMbit), where Mbit is a variable that depends on the length Lmax of the SS/PBCH block index:
+•	For Lmax = 4, v is the two least significant bits of the SS/PBCH block index.
+•	For Lmax = 8 or Lmax = 64, v is the three least significant bits of the SS/PBCH block index.
+This step is crucial to ensure that the transmitted signal is robust against interference, enabling accurate decoding by the receiver.
+(7) Modulation
+The image depicts the Modulation process
+ 
+The process starts with a binary sequence b̃(0), b̃(1), ..., b̃(Mbit - 1). This binary sequence is then modulated using QPSK, which maps every two bits of the binary sequence to one complex number symbol, thereby creating a complex number sequence dPBCH(0), dPBCH(1), ..., dPBCH(Msymb - 1).
+QPSK is a type of modulation that is particularly efficient in terms of spectrum usage because it transmits two bits per symbol, which is represented as a complex number. After modulation, the data is represented in a format suitable for transmission over a radio frequency channel, with the sequence now prepared to be mapped onto the resource elements of the carrier frequency.
+
+Code for Each Step
+Step 1: PBCH Transmission (Broadcast MIB)
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/nr-module.h"
+
+using namespace ns3;
+
+int main (int argc, char *argv[])
+{
+    // Create nodes
+    NodeContainer gNbNode;
+    NodeContainer ueNodes;
+    gNbNode.Create(1);
+    ueNodes.Create(1);
+
+    // Set up NR module
+    Ptr<NrHelper> nrHelper = CreateObject<NrHelper>();
+
+    // Set up EPC helper
+    Ptr<PointToPointEpcHelper> epcHelper = CreateObject<PointToPointEpcHelper>();
+    nrHelper->SetEpcHelper(epcHelper);
+
+    // Create a node for the remote host
+    Ptr<Node> remoteHost = CreateObject<Node>();
+    NodeContainer remoteHostContainer(remoteHost);
+
+    // Install Internet stack
+    InternetStackHelper internet;
+    internet.Install(remoteHostContainer);
+
+    // Configure PBCH
+    nrHelper->SetAttribute ("Cores", UintegerValue (1)); // Simplified for demonstration
+
+    // Configure and connect gNB and UE
+    NetDeviceContainer gNbDevices = nrHelper->InstallEnbDevice(gNbNode);
+    NetDeviceContainer ueDevices = nrHelper->InstallUeDevice(ueNodes);
+
+    // Attach UEs to gNB
+    nrHelper->Attach(ueDevices, gNbDevices.Get(0));
+
+    // Simulation settings
+    Simulator::Stop(Seconds(10));
+    Simulator::Run();
+    Simulator::Destroy();
+    return 0;
+}
+
+Step 2: PDCCH Transmission (Send DCI)
+#include "ns3/nr-module.h"
+
+int main (int argc, char *argv[])
+{
+    // Previous setup...
+
+    // Configure PDCCH
+    nrHelper->SetSchedulerType("ns3::NrMacSchedulerTdmaRR");
+    nrHelper->SetAttribute("Numerology", UintegerValue(0)); // Example numerology
+
+    // Configure DCI for PDSCH and PUSCH
+    Ptr<NrUeNetDevice> ueDevice = DynamicCast<NrUeNetDevice>(ueDevices.Get(0));
+    Ptr<NrEnbNetDevice> enbDevice = DynamicCast<NrEnbNetDevice>(gNbDevices.Get(0));
+
+    Ptr<NrPhyMacCommon> phyMacCommon = CreateObject<NrPhyMacCommon>();
+    phyMacCommon->SetAttribute("RbsPerTb", UintegerValue(50)); // Example value
+    phyMacCommon->SetAttribute("NumberOfTbs", UintegerValue(1));
+
+    enbDevice->GetPhy()->SetPhyMacCommon(phyMacCommon);
+    ueDevice->GetPhy()->SetPhyMacCommon(phyMacCommon);
+
+    // Simulation settings
+    Simulator::Stop(Seconds(10));
+    Simulator::Run();
+    Simulator::Destroy();
+    return 0;
+}
+
+Step 3: UE Monitors Search Space and Decodes PDCCH
+#include "ns3/nr-module.h"
+
+int main (int argc, char *argv[])
+{
+    // Previous setup...
+
+    // Configure UE to monitor PDCCH
+    nrHelper->SetAttribute("SearchSpace", UintegerValue(1)); // Example search space configuration
+
+    // Attach UEs to gNB and configure initial UE state
+    nrHelper->Attach(ueDevices, gNbDevices.Get(0));
+    nrHelper->EnableTraces();
+
+    // Simulation settings
+    Simulator::Stop(Seconds(10));
+    Simulator::Run();
+    Simulator::Destroy();
+    return 0;
+}
+
+Step 4: PDSCH (Downlink Data) and PUSCH (Uplink Data)
+#include "ns3/applications-module.h"
+
+int main (int argc, char *argv[])
+{
+    // Previous setup...
+
+    // Install applications on UEs
+    uint16_t dlPort = 1234;
+    uint16_t ulPort = 2000;
+
+    ApplicationContainer clientApps;
+    ApplicationContainer serverApps;
+
+    // Downlink (gNB to UE)
+    UdpClientHelper dlClient(ueIpInterface.GetAddress(0), dlPort);
+    dlClient.SetAttribute("MaxPackets", UintegerValue(1000));
+    dlClient.SetAttribute("Interval", TimeValue(MilliSeconds(10)));
+    dlClient.SetAttribute("PacketSize", UintegerValue(1024));
+
+    clientApps.Add(dlClient.Install(remoteHost));
+
+    UdpServerHelper dlServer(dlPort);
+    serverApps.Add(dlServer.Install(ueNodes.Get(0)));
+
+    // Uplink (UE to gNB)
+    UdpClientHelper ulClient(remoteHostAddr, ulPort);
+    ulClient.SetAttribute("MaxPackets", UintegerValue(1000));
+    ulClient.SetAttribute("Interval", TimeValue(MilliSeconds(10)));
+    ulClient.SetAttribute("PacketSize", UintegerValue(1024));
+
+    clientApps.Add(ulClient.Install(ueNodes.Get(0)));
+
+    UdpServerHelper ulServer(ulPort);
+    serverApps.Add(ulServer.Install(remoteHostContainer.Get(0)));
+
+    clientApps.Start(Seconds(2.0));
+    clientApps.Stop(Seconds(10.0));
+    serverApps.Start(Seconds(2.0));
+    serverApps.Stop(Seconds(10.0));
+
+    // Run simulation
+    Simulator::Stop(Seconds(10));
+    Simulator::Run();
+    Simulator::Destroy();
+    return 0;
+}
+
+
+
